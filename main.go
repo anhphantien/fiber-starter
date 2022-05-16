@@ -8,16 +8,9 @@ import (
 	"log"
 )
 
-// @title Book App
+// @title Fiber starter
 // @version 1.0
-// @description This is an API for Book Application
-
-// @contact.name Dino Puguh
-// @contact.email dinopuguh@gmail.com
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
+// @description Fiber starter's API documentation
 // @BasePath /api
 func main() {
 	if err := database.Connect(); err != nil {

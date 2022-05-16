@@ -1,25 +1,31 @@
 package main
 
 import (
+	"fiber-starter/database"
+	_ "fiber-starter/docs"
+	"fiber-starter/models"
+	"fiber-starter/routes"
 	"log"
-
-	"github.com/gofiber/fiber/v2"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
+// @title Book App
+// @version 1.0
+// @description This is an API for Book Application
+
+// @contact.name Dino Puguh
+// @contact.email dinopuguh@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @BasePath /api
 func main() {
-	app := fiber.New()
-
-	app.Get("/", hello)
-
-	app.Get("/swagger/", fiberSwagger.WrapHandler)
-
-	err := app.Listen(":3000")
-	if err != nil {
-		log.Fatalf("fiber.Listen failed %s", err)
+	if err := database.Connect(); err != nil {
+		log.Panic("Can't connect database:", err.Error())
 	}
-}
 
-func hello(c *fiber.Ctx) error {
-	return c.SendString("Hello, World 👋!")
+	database.DBConn.AutoMigrate(&models.Book{})
+
+	app := routes.New()
+	log.Fatal(app.Listen(":3000"))
 }

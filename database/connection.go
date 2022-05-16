@@ -26,7 +26,7 @@ func Connect() (err error) {
 	// 	return err
 	// }
 
-	dsn := "root:@/test"
+	dsn := "root:@tcp(localhost:3306)/test?charset=utf8mb4&collation=utf8mb4_unicode_ci"
 	fmt.Println(dsn)
 	DBConn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

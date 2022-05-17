@@ -17,7 +17,6 @@ type ResponseHTTP struct {
 }
 
 // @Summary Get all books
-// @Description Get all books
 // @Tags books
 // @Success 200 {object} ResponseHTTP{data=[]models.Book}
 // @Router /v1/books [get]
@@ -40,9 +39,7 @@ func GetAllBooks(c *fiber.Ctx) error {
 	})
 }
 
-// GetBookByID is a function to get a book by ID
-// @Summary Get book by ID
-// @Description Get book by ID
+// @Summary Get book by ID 11111111
 // @Tags books
 // @Accept json
 // @Produce json
@@ -81,9 +78,7 @@ func GetBookByID(c *fiber.Ctx) error {
 	})
 }
 
-// RegisterBook registers a new book data
 // @Summary Register a new book
-// @Description Register book
 // @Tags books
 // @Accept json
 // @Produce json
@@ -112,9 +107,8 @@ func RegisterBook(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteBook function removes a book by ID
+// @Security BearerAuth
 // @Summary Remove book by ID
-// @Description Remove book by ID
 // @Tags books
 // @Accept json
 // @Produce json

@@ -16,14 +16,10 @@ type ResponseHTTP struct {
 	Message string      `json:"message"`
 }
 
-// GetAllBooks is a function to get all books data from database
 // @Summary Get all books
 // @Description Get all books
 // @Tags books
-// @Accept json
-// @Produce json
 // @Success 200 {object} ResponseHTTP{data=[]models.Book}
-// @Failure 503 {object} ResponseHTTP{}
 // @Router /v1/books [get]
 func GetAllBooks(c *fiber.Ctx) error {
 	db := database.DBConn

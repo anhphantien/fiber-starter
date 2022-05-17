@@ -3,31 +3,20 @@ package routes
 import (
 	"fiber-starter/handlers"
 
-	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/swagger"
 )
 
-// New create an instance of Book app routes
 func New() *fiber.App {
 	app := fiber.New()
-	app.Use(cors.New())
-	app.Use(logger.New(logger.Config{
-		Format:     "${cyan}[${time}] ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
-		TimeFormat: "02-Jan-2006",
-		TimeZone:   "Asia/Jakarta",
-	}))
+
+	// app.Use(cors.New())
 
 	app.Get("/docs/*", swagger.HandlerDefault)
-	api := app.Group("/api")
-	v1 := api.Group("/v1", func(c *fiber.Ctx) error {
-		c.JSON(fiber.Map{
-			"message": "🐣 v1",
-		})
-		return c.Next()
-	})
 
+	api := app.Group("/api")
+
+	v1 := api.Group("/v1")
 	v1.Get("/books", handlers.GetAllBooks)
 	v1.Get("/books/:id", handlers.GetBookByID)
 	v1.Post("/books", handlers.RegisterBook)

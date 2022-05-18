@@ -9,6 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type _Book struct {
+	ID        uint64  `json:"id" gorm:"column:id;primarykey"`
+	Title     *string `json:"title" gorm:"type:varchar(255)"`
+	Author    *string `json:"author" gorm:"type:varchar(255)"`
+	Publisher *string `json:"publisher" gorm:"type:varchar(255)"`
+	Name      *string `json:"name" gorm:"type:varchar(255)"`
+}
+
 type HttpResponse struct {
 	StatusCode int         `json:"statusCode"`
 	Data       interface{} `json:"data,omitempty"`
@@ -21,8 +29,8 @@ type HttpResponse struct {
 func GetAll(c *fiber.Ctx) error {
 	db := database.DBConn
 
-	var books []models.Book
-	if res := db.Find(&books); res.Error != nil {
+	var books = []_Book{}
+	if res := db.Model(&models.Book{}).Find(&books); res.Error != nil {
 		return c.Status(http.StatusInternalServerError).JSON(HttpResponse{
 			StatusCode: http.StatusInternalServerError,
 		})
@@ -30,7 +38,7 @@ func GetAll(c *fiber.Ctx) error {
 
 	return c.JSON(HttpResponse{
 		StatusCode: http.StatusOK,
-		Data:       books,
+		Data:       &books,
 	})
 }
 
@@ -43,8 +51,8 @@ func GetByID(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	id := c.Params("id")
-	book := new(models.Book)
-	if err := db.First(&book, id).Error; err != nil {
+	book := _Book{}
+	if err := db.Model(&models.Book{}).First(&book, id).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
 			return c.Status(http.StatusNotFound).JSON(HttpResponse{
@@ -59,7 +67,7 @@ func GetByID(c *fiber.Ctx) error {
 
 	return c.JSON(HttpResponse{
 		StatusCode: http.StatusOK,
-		Data:       *book,
+		Data:       &book,
 	})
 }
 

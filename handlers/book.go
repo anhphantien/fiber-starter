@@ -3,148 +3,116 @@ package handlers
 import (
 	"fiber-starter/database"
 	"fiber-starter/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-// ResponseHTTP represents response body of this API
-type ResponseHTTP struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
+type HttpResponse struct {
+	StatusCode int         `json:"statusCode"`
+	Data       interface{} `json:"data,omitempty"`
 }
 
 // @Summary Get all books
 // @Tags books
-// @Success 200 {object} ResponseHTTP{data=[]models.Book}
+// @Success 200 {object} HttpResponse{data=[]models.Book}
 // @Router /v1/books [get]
-func GetAllBooks(c *fiber.Ctx) error {
+func GetAll(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	var books []models.Book
 	if res := db.Find(&books); res.Error != nil {
-		return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
-			Success: false,
-			Message: res.Error.Error(),
-			Data:    nil,
+		return c.Status(http.StatusInternalServerError).JSON(HttpResponse{
+			StatusCode: http.StatusInternalServerError,
 		})
 	}
 
-	return c.JSON(ResponseHTTP{
-		Success: true,
-		Message: "Success get all books.",
-		Data:    books,
+	return c.JSON(HttpResponse{
+		StatusCode: http.StatusOK,
+		Data:       books,
 	})
 }
 
-// @Summary Get book by ID 11111111
+// @Summary Get a book by ID
 // @Tags books
-// @Accept json
-// @Produce json
 // @Param id path int true "Book ID"
-// @Success 200 {object} ResponseHTTP{data=[]models.Book}
-// @Failure 404 {object} ResponseHTTP{}
-// @Failure 503 {object} ResponseHTTP{}
+// @Success 200 {object} HttpResponse{data=models.Book}
 // @Router /v1/books/{id} [get]
-func GetBookByID(c *fiber.Ctx) error {
-	id := c.Params("id")
+func GetByID(c *fiber.Ctx) error {
 	db := database.DBConn
 
+	id := c.Params("id")
 	book := new(models.Book)
 	if err := db.First(&book, id).Error; err != nil {
-		switch err.Error() {
-		case "record not found":
-			return c.Status(http.StatusNotFound).JSON(ResponseHTTP{
-				Success: false,
-				Message: fmt.Sprintf("Book with ID %v not found.", id),
-				Data:    nil,
+		switch err {
+		case gorm.ErrRecordNotFound:
+			return c.Status(http.StatusNotFound).JSON(HttpResponse{
+				StatusCode: http.StatusNotFound,
 			})
 		default:
-			return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
-				Success: false,
-				Message: err.Error(),
-				Data:    nil,
+			return c.Status(http.StatusInternalServerError).JSON(HttpResponse{
+				StatusCode: http.StatusInternalServerError,
 			})
-
 		}
 	}
 
-	return c.JSON(ResponseHTTP{
-		Success: true,
-		Message: "Success get book by ID.",
-		Data:    *book,
+	return c.JSON(HttpResponse{
+		StatusCode: http.StatusOK,
+		Data:       *book,
 	})
 }
 
-// @Summary Register a new book
+// @Summary Create a new book
 // @Tags books
-// @Accept json
-// @Produce json
-// @Param book body models.Book true "Register book"
-// @Success 200 {object} ResponseHTTP{data=models.Book}
-// @Failure 400 {object} ResponseHTTP{}
+// @Param book body models.Book true "Book data"
+// @Success 200 {object} HttpResponse{data=models.Book}
 // @Router /v1/books [post]
-func RegisterBook(c *fiber.Ctx) error {
+func Create(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	book := new(models.Book)
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(http.StatusBadRequest).JSON(ResponseHTTP{
-			Success: false,
-			Message: err.Error(),
-			Data:    nil,
+		return c.Status(http.StatusBadRequest).JSON(HttpResponse{
+			StatusCode: http.StatusBadRequest,
 		})
 	}
 
 	db.Create(book)
 
-	return c.JSON(ResponseHTTP{
-		Success: true,
-		Message: "Success register a book.",
-		Data:    *book,
+	return c.JSON(HttpResponse{
+		StatusCode: http.StatusCreated,
+		Data:       *book,
 	})
 }
 
 // @Security BearerAuth
-// @Summary Remove book by ID
+// @Summary Delete a book
 // @Tags books
-// @Accept json
-// @Produce json
 // @Param id path int true "Book ID"
-// @Success 200 {object} ResponseHTTP{}
-// @Failure 404 {object} ResponseHTTP{}
-// @Failure 503 {object} ResponseHTTP{}
+// @Success 200 {object} HttpResponse{}
 // @Router /v1/books/{id} [delete]
-func DeleteBook(c *fiber.Ctx) error {
-	id := c.Params("id")
+func Delete(c *fiber.Ctx) error {
 	db := database.DBConn
 
+	id := c.Params("id")
 	book := new(models.Book)
 	if err := db.First(&book, id).Error; err != nil {
-		switch err.Error() {
-		case "record not found":
-			return c.Status(http.StatusNotFound).JSON(ResponseHTTP{
-				Success: false,
-				Message: fmt.Sprintf("Book with ID %v not found.", id),
-				Data:    nil,
+		switch err {
+		case gorm.ErrRecordNotFound:
+			return c.Status(http.StatusNotFound).JSON(HttpResponse{
+				StatusCode: http.StatusNotFound,
 			})
 		default:
-			return c.Status(http.StatusServiceUnavailable).JSON(ResponseHTTP{
-				Success: false,
-				Message: err.Error(),
-				Data:    nil,
+			return c.Status(http.StatusInternalServerError).JSON(HttpResponse{
+				StatusCode: http.StatusInternalServerError,
 			})
-
 		}
 	}
 
 	db.Delete(&book)
 
-	return c.JSON(ResponseHTTP{
-		Success: true,
-		Message: "Success delete book.",
-		Data:    nil,
+	return c.JSON(HttpResponse{
+		StatusCode: http.StatusNoContent,
 	})
 }

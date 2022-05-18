@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"fiber-starter/handlers"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 )
@@ -12,15 +10,13 @@ func New() *fiber.App {
 
 	// app.Use(cors.New())
 
-	app.Get("/docs/*", swagger.HandlerDefault)
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	api := app.Group("/api")
 
 	v1 := api.Group("/v1")
-	v1.Get("/books", handlers.GetAllBooks)
-	v1.Get("/books/:id", handlers.GetBookByID)
-	v1.Post("/books", handlers.RegisterBook)
-	v1.Delete("/books/:id", handlers.DeleteBook)
+
+	bookRoutes(v1)
 
 	return app
 }

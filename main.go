@@ -18,7 +18,7 @@ import (
 // @name Authorization
 func main() {
 	if err := database.Connect(); err != nil {
-		log.Panic("Can't connect database:", err.Error())
+		log.Panic("Can't connect to database:", err.Error())
 	}
 
 	database.DBConn.AutoMigrate(&models.Book{})

@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/gofiber/fiber/v2 v2.33.0
 	github.com/gofiber/swagger v0.0.1
+	github.com/joho/godotenv v1.4.0
 	github.com/swaggo/swag v1.8.2
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.5
@@ -27,10 +28,10 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.36.0 // indirect
+	github.com/valyala/fasthttp v1.37.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20220516155154-20f960328961 // indirect
-	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
+	golang.org/x/net v0.0.0-20220517181318-183a9ca12b87 // indirect
+	golang.org/x/sys v0.0.0-20220517195934-5e4e11fc645e // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.10 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

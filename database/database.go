@@ -14,11 +14,11 @@ var DBConn *gorm.DB
 
 func Connect() (err error) {
 	var (
-		user     = env.USER
-		password = env.PASSWORD
-		host     = env.HOST
+		user     = env.DB_USER
+		password = env.DB_PASS
+		host     = env.DB_HOST
+		port     = env.DB_PORT
 		dbname   = env.DB_NAME
-		port     = env.PORT
 	)
 
 	dsn := fmt.Sprint(user, password, ":@tcp(", host, ":", port, ")/", dbname, "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true")
@@ -30,6 +30,6 @@ func Connect() (err error) {
 	}
 
 	DBConn.Logger = logger.Default.LogMode(logger.Info)
-	DBConn.AutoMigrate(&models.Book{})
+	DBConn.AutoMigrate(&models.Book{}, &models.User{})
 	return
 }

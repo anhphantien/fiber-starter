@@ -7,8 +7,8 @@ import (
 )
 
 func BookRoutes(v1 fiber.Router) {
-	v1.Get("books", handlers.GetAll)
-	v1.Get("books/:id", handlers.GetByID)
-	v1.Post("books", handlers.Create)
-	v1.Delete("books/:id", handlers.Delete)
+	v1.Get("books", handlers.BookHandler{}.GetAll)
+	v1.Get("books/:id", handlers.BookHandler{}.GetByID)
+	v1.Post("books", handlers.BookHandler{}.Create)
+	v1.Delete("books/:id", handlers.BookHandler{}.Delete)
 }

@@ -9,6 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type BookHandler struct{}
+
 type _Book struct {
 	ID   int     `json:"id"`
 	Name *string `json:"name"`
@@ -18,7 +20,7 @@ type _Book struct {
 // @Tags books
 // @Success 200 {object} response.Http{data=[]models.Book}
 // @Router /v1/books [get]
-func GetAll(c *fiber.Ctx) error {
+func (h BookHandler) GetAll(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	var books = []_Book{}
@@ -38,7 +40,7 @@ func GetAll(c *fiber.Ctx) error {
 // @Param id path int true "Book ID"
 // @Success 200 {object} response.Http{data=models.Book}
 // @Router /v1/books/{id} [get]
-func GetByID(c *fiber.Ctx) error {
+func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	id := c.Params("id")
@@ -56,10 +58,10 @@ func GetByID(c *fiber.Ctx) error {
 
 // @Summary Create a new book
 // @Tags books
-// @Param book body models.Book true "Book data"
+// @Param Body body models.Book true " "
 // @Success 200 {object} response.Http{data=models.Book}
 // @Router /v1/books [post]
-func Create(c *fiber.Ctx) error {
+func (h BookHandler) Create(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	book := new(models.Book)
@@ -84,7 +86,7 @@ func Create(c *fiber.Ctx) error {
 // @Param id path int true "Book ID"
 // @Success 200 {object} response.Http{}
 // @Router /v1/books/{id} [delete]
-func Delete(c *fiber.Ctx) error {
+func (h BookHandler) Delete(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	id := c.Params("id")

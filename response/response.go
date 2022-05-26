@@ -3,6 +3,7 @@ package response
 import (
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -26,4 +27,24 @@ func Error(c *fiber.Ctx, err error) error {
 			Error:      err.Error(),
 		})
 	}
+}
+
+func Validate(c *fiber.Ctx, payload interface{}) error {
+	var validate = validator.New()
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(Http{
+			StatusCode: http.StatusBadRequest,
+			Error:      err.Error(),
+		})
+	}
+
+	if err := validate.Struct(payload); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(Http{
+			StatusCode: http.StatusBadRequest,
+			Error:      err.Error(),
+		})
+	}
+
+	return nil
 }

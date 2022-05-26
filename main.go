@@ -3,6 +3,7 @@ package main
 import (
 	"fiber-starter/database"
 	_ "fiber-starter/docs"
+	"fiber-starter/env"
 	"fiber-starter/routes"
 	"log"
 )
@@ -21,5 +22,5 @@ func main() {
 	}
 
 	app := routes.New()
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":" + env.PORT))
 }

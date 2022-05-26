@@ -15,6 +15,7 @@ func New() *fiber.App {
 	api := app.Group("api")
 
 	v1 := api.Group("v1")
+	AuthRoutes(v1)
 	BookRoutes(v1)
 
 	return app

@@ -3,7 +3,6 @@ package main
 import (
 	"fiber-starter/database"
 	_ "fiber-starter/docs"
-	"fiber-starter/models"
 	"fiber-starter/routes"
 	"log"
 )
@@ -20,8 +19,6 @@ func main() {
 	if err := database.Connect(); err != nil {
 		log.Panic("Can't connect to database:", err.Error())
 	}
-
-	database.DBConn.AutoMigrate(&models.Book{})
 
 	app := routes.New()
 	log.Fatal(app.Listen(":3000"))

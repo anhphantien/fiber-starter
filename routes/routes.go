@@ -10,13 +10,12 @@ func New() *fiber.App {
 
 	// app.Use(cors.New())
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	app.Get("swagger/*", swagger.HandlerDefault)
 
-	api := app.Group("/api")
+	api := app.Group("api")
 
-	v1 := api.Group("/v1")
-
-	bookRoutes(v1)
+	v1 := api.Group("v1")
+	BookRoutes(v1)
 
 	return app
 }

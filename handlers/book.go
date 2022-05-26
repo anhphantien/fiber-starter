@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 type _Book struct {
@@ -23,11 +22,9 @@ func GetAll(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	var books = []_Book{}
-	if res := db.Model(&models.Book{}).Find(&books); res.Error != nil {
-		return c.Status(http.StatusInternalServerError).JSON(response.Http{
-			StatusCode: http.StatusInternalServerError,
-			Error:      res.Error.Error(),
-		})
+
+	if err := db.Model(&models.Book{}).Find(&books).Error; err != nil {
+		return response.Error(c, err)
 	}
 
 	return c.JSON(response.Http{
@@ -46,18 +43,9 @@ func GetByID(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 	book := _Book{}
+
 	if err := db.Model(&models.Book{}).First(&book, id).Error; err != nil {
-		switch err {
-		case gorm.ErrRecordNotFound:
-			return c.Status(http.StatusNotFound).JSON(response.Http{
-				StatusCode: http.StatusNotFound,
-			})
-		default:
-			return c.Status(http.StatusInternalServerError).JSON(response.Http{
-				StatusCode: http.StatusInternalServerError,
-				Error:      err.Error(),
-			})
-		}
+		return response.Error(c, err)
 	}
 
 	return c.JSON(response.Http{
@@ -75,6 +63,7 @@ func Create(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	book := new(models.Book)
+
 	if err := c.BodyParser(&book); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(response.Http{
 			StatusCode: http.StatusBadRequest,
@@ -100,23 +89,14 @@ func Delete(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 	book := new(models.Book)
+
 	if err := db.First(&book, id).Error; err != nil {
-		switch err {
-		case gorm.ErrRecordNotFound:
-			return c.Status(http.StatusNotFound).JSON(response.Http{
-				StatusCode: http.StatusNotFound,
-			})
-		default:
-			return c.Status(http.StatusInternalServerError).JSON(response.Http{
-				StatusCode: http.StatusInternalServerError,
-				Error:      err.Error(),
-			})
-		}
+		return response.Error(c, err)
 	}
 
 	db.Delete(&book)
 
 	return c.JSON(response.Http{
-		StatusCode: http.StatusNoContent,
+		StatusCode: http.StatusOK,
 	})
 }

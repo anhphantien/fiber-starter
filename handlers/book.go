@@ -62,7 +62,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 func (h BookHandler) Create(c *fiber.Ctx) error {
 	db := database.DBConn
 
-	book := new(models.Book)
+	book := models.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
@@ -71,11 +71,11 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 		})
 	}
 
-	db.Create(book)
+	db.Create(&book)
 
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusCreated,
-		Data:       *book,
+		Data:       book,
 	})
 }
 
@@ -89,7 +89,7 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	id := c.Params("id")
-	book := new(models.Book)
+	book := models.Book{}
 
 	if err := db.First(&book, id).Error; err != nil {
 		return SqlError(c, err)

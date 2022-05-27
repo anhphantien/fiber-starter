@@ -6,6 +6,7 @@ import (
 	"fiber-starter/models"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct{}
@@ -21,21 +22,34 @@ type SignInResponse struct {
 // @Success 200 {object} HttpResponse{data=SignInResponse}
 // @Router /v1/auth/signin [post]
 func (h AuthHandler) SignIn(c *fiber.Ctx) error {
-	signInBody := new(dto.SignInBody)
-	if err, ok := Validate(c, signInBody); !ok {
+	body := new(dto.SignInBody)
+	if err, ok := Validate(c, body); !ok {
 		return err
 	}
 
 	db := database.DBConn
 
-	var books = []_Book{}
-
-	if err := db.Model(&models.Book{}).Find(&books).Error; err != nil {
+	user := models.User{}
+	if err := db.Model(&models.User{}).First(&user, models.User{Username: &body.Username}).Error; err != nil {
 		return SqlError(c, err)
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(body.Password)); err != nil {
+		switch err {
+		case bcrypt.ErrMismatchedHashAndPassword:
+			return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+				StatusCode: fiber.StatusBadRequest,
+				Error:      INVALID_PASSWORD,
+			})
+		default:
+			return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+				StatusCode: fiber.StatusBadRequest,
+				Error:      err.Error(),
+			})
+		}
 	}
 
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       &books,
+		Data:       user,
 	})
 }

@@ -1,6 +1,6 @@
 package dto
 
-type SignIn struct {
-	Username string `validate:"required"`
-	Password string `validate:"required"`
+type SignInBody struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }

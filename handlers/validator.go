@@ -12,9 +12,9 @@ type ApiError struct {
 	Message string `json:"message"`
 }
 
-var validate = validator.New()
-
 func Validate(c *fiber.Ctx, payload interface{}) (error, bool) {
+	validate := validator.New()
+
 	if err := c.BodyParser(&payload); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
 			StatusCode: fiber.StatusBadRequest,

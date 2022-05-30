@@ -56,7 +56,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 
 // @Summary Create a new book
 // @Tags books
-// @Param Body body models.Book true " "
+// @Param body body models.Book true " "
 // @Success 200 {object} HttpResponse{data=models.Book}
 // @Router /v1/books [post]
 func (h BookHandler) Create(c *fiber.Ctx) error {

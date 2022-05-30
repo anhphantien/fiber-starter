@@ -3,9 +3,12 @@ package handlers
 import (
 	"fiber-starter/database"
 	"fiber-starter/dto"
+	"fiber-starter/env"
 	"fiber-starter/models"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,9 +19,17 @@ type SignInResponse struct {
 	RefreshToken string `json:"refreshToken,omitempty"`
 }
 
+type Claims struct {
+	ID       uint64  `json:"id"`
+	Username *string `json:"username"`
+	Email    *string `json:"email"`
+	Role     *string `json:"role"`
+	jwt.RegisteredClaims
+}
+
 // @Summary Sign in
 // @Tags auth
-// @Param Body body dto.SignInBody true " "
+// @Param body body dto.SignInBody true " "
 // @Success 200 {object} HttpResponse{data=SignInResponse}
 // @Router /v1/auth/signin [post]
 func (h AuthHandler) SignIn(c *fiber.Ctx) error {
@@ -48,8 +59,18 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 		}
 	}
 
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Role:     user.Role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second)),
+		},
+	}).SignedString(env.JWT_SECRET)
+
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       user,
+		Data:       SignInResponse{AccessToken: token},
 	})
 }

@@ -33,8 +33,8 @@ type Claims struct {
 // @Success 200 {object} HttpResponse{data=SignInResponse}
 // @Router /v1/auth/signin [post]
 func (h AuthHandler) SignIn(c *fiber.Ctx) error {
-	body := new(dto.SignInBody)
-	if err, ok := Validate(c, body); !ok {
+	body := dto.SignInBody{}
+	if err, ok := Validate(c, &body); !ok {
 		return err
 	}
 

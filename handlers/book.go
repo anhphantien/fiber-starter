@@ -29,7 +29,7 @@ func (h BookHandler) GetAll(c *fiber.Ctx) error {
 
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       &books,
+		Data:       books,
 	})
 }
 
@@ -50,7 +50,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       &book,
+		Data:       book,
 	})
 }
 

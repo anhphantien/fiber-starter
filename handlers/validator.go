@@ -15,7 +15,7 @@ type ApiError struct {
 func Validate(c *fiber.Ctx, payload interface{}) (error, bool) {
 	validate := validator.New()
 
-	if err := c.BodyParser(&payload); err != nil {
+	if err := c.BodyParser(payload); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
@@ -26,7 +26,7 @@ func Validate(c *fiber.Ctx, payload interface{}) (error, bool) {
 		errors := []ApiError{}
 
 		for _, fieldError := range err.(validator.ValidationErrors) {
-			errors = append(errors, ApiError{makeFirstLetterLowercase(fieldError.Field()), msgForTag(fieldError)})
+			errors = append(errors, ApiError{Field: makeFirstLetterLowercase(fieldError.Field()), Message: msgForTag(fieldError)})
 		}
 
 		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{

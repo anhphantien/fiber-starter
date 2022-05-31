@@ -3,6 +3,7 @@ package handlers
 import (
 	"fiber-starter/database"
 	"fiber-starter/models"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -86,6 +87,9 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 // @Success 200 {object} HttpResponse{}
 // @Router /v1/books/{id} [delete]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
+	user := CurrentUser(c)
+	fmt.Println(user)
+
 	db := database.DBConn
 
 	id := c.Params("id")

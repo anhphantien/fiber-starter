@@ -20,10 +20,9 @@ type SignInResponse struct {
 }
 
 type Claims struct {
-	ID       uint64  `json:"id"`
-	Username *string `json:"username"`
-	Email    *string `json:"email"`
-	Role     *string `json:"role"`
+	ID       uint64 `json:"id"`
+	Username string `json:"username"`
+	Role     string `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -61,10 +60,10 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 
 	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Role:     user.Role,
+		Username: *user.Username,
+		Role:     *user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second)),
 		},
 	}).SignedString(env.JWT_SECRET)

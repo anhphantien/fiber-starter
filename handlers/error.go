@@ -8,11 +8,13 @@ import (
 var (
 	DATA_NOT_FOUND   string
 	INVALID_PASSWORD string
+	INVALID_TOKEN    string
 )
 
 func init() {
-	DATA_NOT_FOUND = "Data not found"
-	INVALID_PASSWORD = "Invalid password"
+	DATA_NOT_FOUND = "data not found"
+	INVALID_PASSWORD = "invalid password"
+	INVALID_TOKEN = "invalid token"
 }
 
 func SqlError(c *fiber.Ctx, err error) error {

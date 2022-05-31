@@ -8,7 +8,7 @@ import (
 )
 
 func BookRoutes(v1 fiber.Router) {
-	v1.Group("books").Use(middlewares.JwtAuth)
+	v1.Use(middlewares.JwtAuth())
 
 	v1.Get("books", handlers.BookHandler{}.GetAll)
 	v1.Get("books/:id", handlers.BookHandler{}.GetByID)

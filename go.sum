@@ -41,6 +41,8 @@ github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LB
 github.com/gofiber/fiber/v2 v2.32.0/go.mod h1:CMy5ZLiXkn6qwthrl03YMyW1NLfj0rhxz2LKl4t7ZTY=
 github.com/gofiber/fiber/v2 v2.34.0 h1:96BJMw6uaxQhJsHY54SFGOtGgp9pgombK5Hbi4JSEQA=
 github.com/gofiber/fiber/v2 v2.34.0/go.mod h1:ozRQfS+D7EL1+hMH+gutku0kfx1wLX4hAxDCtDzpj4U=
+github.com/gofiber/jwt/v3 v3.2.12 h1:JN4Y4BF81r0ccP/3LfGCnLnf15DpOIG25+1i7hyKj6s=
+github.com/gofiber/jwt/v3 v3.2.12/go.mod h1:kuln0X4DO8+OuEvyHNtfzQP8rPDKq0toMMHaSZeVy8A=
 github.com/gofiber/swagger v0.0.1 h1:Qwt6uehJffeMG7zla3ampguOPtAW5K4xDAmpaL1qwXk=
 github.com/gofiber/swagger v0.0.1/go.mod h1:gal49FHSULvKAl9Ta+W7fRHdlTWhHPvArmsxKaIdLw4=
 github.com/golang-jwt/jwt/v4 v4.4.1 h1:pC5DB52sCeK48Wlb9oPcdhnjkz1TKt1D/P7WKJ0kUcQ=

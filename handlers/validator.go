@@ -12,7 +12,7 @@ type ApiError struct {
 	Message string `json:"message"`
 }
 
-func Validate(c *fiber.Ctx, payload interface{}) (error, bool) {
+func Validate(c *fiber.Ctx, payload any) (error, bool) {
 	validate := validator.New()
 
 	if err := c.BodyParser(payload); err != nil {

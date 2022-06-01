@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fiber-starter/models"
+
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -20,12 +22,12 @@ func init() {
 func SqlError(c *fiber.Ctx, err error) error {
 	switch err {
 	case gorm.ErrRecordNotFound:
-		return c.Status(fiber.StatusNotFound).JSON(HttpResponse{
+		return c.Status(fiber.StatusNotFound).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusNotFound,
 			Error:      DATA_NOT_FOUND,
 		})
 	default:
-		return c.Status(fiber.StatusInternalServerError).JSON(HttpResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusInternalServerError,
 			Error:      err.Error(),
 		})

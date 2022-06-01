@@ -9,7 +9,7 @@ import (
 
 func RoleAuth(c *fiber.Ctx, user models.Claims, roles ...string) (error, bool) {
 	if !slices.Contains(roles, user.Role) {
-		return c.Status(fiber.StatusForbidden).JSON(HttpResponse{
+		return c.Status(fiber.StatusForbidden).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusForbidden,
 			Error:      PERMISSION_DENIED,
 		}), false

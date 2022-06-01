@@ -1,4 +1,4 @@
-package services
+package models
 
 type HttpResponse struct {
 	StatusCode int    `json:"statusCode"`

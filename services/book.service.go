@@ -3,6 +3,7 @@ package services
 import (
 	"fiber-starter/database"
 	"fiber-starter/entities"
+	"fiber-starter/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +23,7 @@ func (h BookService) GetAll(c *fiber.Ctx) error {
 		return SqlError(c, err)
 	}
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       books,
 	})
@@ -43,7 +44,7 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 		return SqlError(c, err)
 	}
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       book,
 	})
@@ -60,7 +61,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
 		})
@@ -68,7 +69,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 
 	db.Create(&book)
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusCreated,
 		Data:       book,
 	})
@@ -86,7 +87,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
 		})
@@ -94,7 +95,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 
 	db.Create(&book)
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusCreated,
 		Data:       book,
 	})
@@ -123,7 +124,7 @@ func (h BookService) Delete(c *fiber.Ctx) error {
 
 	db.Delete(&book)
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusOK,
 	})
 }

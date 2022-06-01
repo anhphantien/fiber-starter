@@ -35,12 +35,12 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(body.Password)); err != nil {
 		switch err {
 		case bcrypt.ErrMismatchedHashAndPassword:
-			return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+			return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 				StatusCode: fiber.StatusBadRequest,
 				Error:      INVALID_PASSWORD,
 			})
 		default:
-			return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+			return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 				StatusCode: fiber.StatusBadRequest,
 				Error:      err.Error(),
 			})
@@ -57,7 +57,7 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 		},
 	}).SignedString(env.JWT_SECRET)
 
-	return c.JSON(HttpResponse{
+	return c.JSON(models.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       models.LoginResponse{AccessToken: token},
 	})

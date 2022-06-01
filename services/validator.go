@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fiber-starter/models"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
@@ -16,7 +17,7 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 	validate := validator.New()
 
 	if err := c.BodyParser(payload); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
 		}), false
@@ -29,7 +30,7 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 			errors = append(errors, ApiError{Field: makeFirstLetterLowercase(fieldError.Field()), Message: msgForTag(fieldError)})
 		}
 
-		return c.Status(fiber.StatusBadRequest).JSON(HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Errors:     errors,
 		}), false

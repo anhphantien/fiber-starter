@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"fiber-starter/env"
-	"fiber-starter/handlers"
+	"fiber-starter/services"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
@@ -16,19 +16,19 @@ func JwtAuth() fiber.Handler {
 			switch err.Error() {
 			case "Missing or malformed JWT":
 				return c.Status(fiber.StatusUnauthorized).
-					JSON(handlers.HttpResponse{
+					JSON(services.HttpResponse{
 						StatusCode: fiber.StatusUnauthorized,
 						Error:      jwt.ErrTokenMalformed.Error(),
 					})
 			case "Invalid or expired JWT":
 				return c.Status(fiber.StatusUnauthorized).
-					JSON(handlers.HttpResponse{
+					JSON(services.HttpResponse{
 						StatusCode: fiber.StatusUnauthorized,
 						Error:      jwt.ErrTokenExpired.Error(),
 					})
 			default:
 				return c.Status(fiber.StatusUnauthorized).
-					JSON(handlers.HttpResponse{
+					JSON(services.HttpResponse{
 						StatusCode: fiber.StatusUnauthorized,
 						Error:      err.Error(),
 					})

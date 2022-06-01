@@ -1,8 +1,8 @@
 package database
 
 import (
+	"fiber-starter/entities"
 	"fiber-starter/env"
-	"fiber-starter/models"
 	"fmt"
 
 	"gorm.io/driver/mysql"
@@ -31,7 +31,7 @@ func Connect() (err error) {
 
 	DB.Logger = logger.Default.LogMode(logger.Info)
 
-	DB.AutoMigrate(&models.Book{}, &models.User{})
+	DB.AutoMigrate(&entities.Book{}, &entities.User{})
 
 	return
 }

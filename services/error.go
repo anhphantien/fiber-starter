@@ -1,4 +1,4 @@
-package handlers
+package services
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -6,13 +6,15 @@ import (
 )
 
 var (
-	DATA_NOT_FOUND   string
-	INVALID_PASSWORD string
+	DATA_NOT_FOUND    string
+	INVALID_PASSWORD  string
+	PERMISSION_DENIED string
 )
 
 func init() {
 	DATA_NOT_FOUND = "data not found"
 	INVALID_PASSWORD = "invalid password"
+	PERMISSION_DENIED = "permission denied"
 }
 
 func SqlError(c *fiber.Ctx, err error) error {

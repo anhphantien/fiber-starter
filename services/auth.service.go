@@ -1,8 +1,9 @@
-package handlers
+package services
 
 import (
 	"fiber-starter/database"
 	"fiber-starter/dto"
+	"fiber-starter/entities"
 	"fiber-starter/env"
 	"fiber-starter/models"
 	"time"
@@ -12,35 +13,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthHandler struct{}
-
-type SignInResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken,omitempty"`
-}
-
-type Claims struct {
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
-	jwt.RegisteredClaims
-}
+type AuthService struct{}
 
 // @Summary Sign in
 // @Tags auth
-// @Param body body dto.SignInBody true " "
-// @Success 200 {object} HttpResponse{data=SignInResponse}
-// @Router /v1/auth/signin [post]
-func (h AuthHandler) SignIn(c *fiber.Ctx) error {
-	body := dto.SignInBody{}
+// @Param body body dto.LoginBody true " "
+// @Success 200 {object} HttpResponse{data=models.LoginResponse}
+// @Router /v1/auth/login [post]
+func (h AuthService) Login(c *fiber.Ctx) error {
+	body := dto.LoginBody{}
 	if err, ok := Validate(c, &body); !ok {
 		return err
 	}
 
 	db := database.DB
 
-	user := models.User{}
-	if err := db.Model(&models.User{}).First(&user, models.User{Username: &body.Username}).Error; err != nil {
+	user := entities.User{}
+	if err := db.Model(&entities.User{}).First(&user, entities.User{Username: &body.Username}).Error; err != nil {
 		return SqlError(c, err)
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(body.Password)); err != nil {
@@ -58,7 +47,7 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 		}
 	}
 
-	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, models.Claims{
 		ID:       user.ID,
 		Username: *user.Username,
 		Role:     *user.Role,
@@ -70,6 +59,6 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 
 	return c.JSON(HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       SignInResponse{AccessToken: token},
+		Data:       models.LoginResponse{AccessToken: token},
 	})
 }

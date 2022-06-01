@@ -20,7 +20,7 @@ type _Book struct {
 // @Success 200 {object} HttpResponse{data=[]models.Book}
 // @Router /v1/books [get]
 func (h BookHandler) GetAll(c *fiber.Ctx) error {
-	db := database.DBConn
+	db := database.DB
 
 	var books = []_Book{}
 
@@ -40,7 +40,7 @@ func (h BookHandler) GetAll(c *fiber.Ctx) error {
 // @Success 200 {object} HttpResponse{data=models.Book}
 // @Router /v1/books/{id} [get]
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
-	db := database.DBConn
+	db := database.DB
 
 	id := c.Params("id")
 	book := _Book{}
@@ -61,7 +61,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 // @Success 200 {object} HttpResponse{data=models.Book}
 // @Router /v1/books [post]
 func (h BookHandler) Create(c *fiber.Ctx) error {
-	db := database.DBConn
+	db := database.DB
 
 	book := models.Book{}
 
@@ -90,7 +90,7 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 	user := CurrentUser(c)
 	fmt.Println(user)
 
-	db := database.DBConn
+	db := database.DB
 
 	id := c.Params("id")
 	book := models.Book{}

@@ -37,7 +37,7 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 		return err
 	}
 
-	db := database.DBConn
+	db := database.DB
 
 	user := models.User{}
 	if err := db.Model(&models.User{}).First(&user, models.User{Username: &body.Username}).Error; err != nil {

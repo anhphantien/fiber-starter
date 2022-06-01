@@ -5,7 +5,7 @@ import (
 	"fiber-starter/database"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
-	"fiber-starter/middlewares"
+	"fiber-starter/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -110,8 +110,8 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Success 200 {object} common.HttpResponse{}
 // @Router /v1/books/{id} [delete]
 func (h BookService) Delete(c *fiber.Ctx) error {
-	user := middlewares.CurrentUser(c)
-	if err, ok := RoleAuth(c, user, "ADMIN", "USER"); !ok {
+	user := utils.CurrentUser(c)
+	if err, ok := utils.RoleAuth(c, user, []string{"ADMIN", "USER"}); !ok {
 		return err
 	}
 

@@ -32,10 +32,13 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 	db := database.DB
 
 	user := entities.User{}
-	if err := db.Model(&entities.User{}).First(&user, entities.User{Username: &body.Username}).Error; err != nil {
+	if err := db.
+		Model(&entities.User{}).
+		First(&user, entities.User{Username: &body.Username}).Error; err != nil {
 		return errors.SqlError(c, err)
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(body.Password)); err != nil {
+	if err := bcrypt.
+		CompareHashAndPassword([]byte(*user.HashedPassword), []byte(body.Password)); err != nil {
 		switch err {
 		case bcrypt.ErrMismatchedHashAndPassword:
 			return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
@@ -55,8 +58,9 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 		Username: *user.Username,
 		Role:     *user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second)),
+			IssuedAt: jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().
+				Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second)),
 		},
 	}).SignedString(env.JWT_SECRET)
 

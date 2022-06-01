@@ -1,4 +1,4 @@
-package services
+package utils
 
 import (
 	"fiber-starter/common"
@@ -9,7 +9,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func RoleAuth(c *fiber.Ctx, user models.JwtClaims, roles ...string) (error, bool) {
+func RoleAuth(c *fiber.Ctx, user models.JwtClaims, roles []string) (error, bool) {
 	if !slices.Contains(roles, user.Role) {
 		return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusForbidden,

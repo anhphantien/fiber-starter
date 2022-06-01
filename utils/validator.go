@@ -46,10 +46,10 @@ func makeFirstLetterLowercase(str string) string {
 	return ""
 }
 
-func msgForTag(fieldError validator.FieldError) string {
-	switch fieldError.Tag() {
+func msgForTag(fe validator.FieldError) string {
+	switch fe.Tag() {
 	case "required":
 		return "This field is required"
 	}
-	return fieldError.Error()
+	return fe.Error()
 }

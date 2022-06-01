@@ -8,10 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CurrentUser(c *fiber.Ctx) models.Claims {
+func CurrentUser(c *fiber.Ctx) models.JwtClaims {
 	claims := c.Locals("user").(*jwt.Token).Claims
 	jsonClaim, _ := json.Marshal(claims)
-	user := models.Claims{}
+	user := models.JwtClaims{}
 	json.Unmarshal(jsonClaim, &user)
 	return user
 }

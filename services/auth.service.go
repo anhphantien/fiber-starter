@@ -1,10 +1,12 @@
 package services
 
 import (
+	"fiber-starter/common"
 	"fiber-starter/database"
 	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/env"
+	"fiber-starter/errors"
 	"fiber-starter/models"
 	"time"
 
@@ -18,7 +20,7 @@ type AuthService struct{}
 // @Summary Sign in
 // @Tags auth
 // @Param body body dto.LoginBody true " "
-// @Success 200 {object} HttpResponse{data=models.LoginResponse}
+// @Success 200 {object} common.HttpResponse{data=models.LoginResponse}
 // @Router /v1/auth/login [post]
 func (h AuthService) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}
@@ -30,24 +32,24 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 
 	user := entities.User{}
 	if err := db.Model(&entities.User{}).First(&user, entities.User{Username: &body.Username}).Error; err != nil {
-		return SqlError(c, err)
+		return errors.SqlError(c, err)
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(body.Password)); err != nil {
 		switch err {
 		case bcrypt.ErrMismatchedHashAndPassword:
-			return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
+			return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 				StatusCode: fiber.StatusBadRequest,
-				Error:      INVALID_PASSWORD,
+				Error:      errors.INVALID_PASSWORD,
 			})
 		default:
-			return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
+			return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 				StatusCode: fiber.StatusBadRequest,
 				Error:      err.Error(),
 			})
 		}
 	}
 
-	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, models.Claims{
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, models.JwtClaims{
 		ID:       user.ID,
 		Username: *user.Username,
 		Role:     *user.Role,
@@ -57,7 +59,7 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 		},
 	}).SignedString(env.JWT_SECRET)
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       models.LoginResponse{AccessToken: token},
 	})

@@ -1,9 +1,10 @@
 package services
 
 import (
+	"fiber-starter/common"
 	"fiber-starter/database"
 	"fiber-starter/entities"
-	"fiber-starter/models"
+	"fiber-starter/errors"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,7 +13,7 @@ type BookService struct{}
 
 // @Summary Get all books
 // @Tags books
-// @Success 200 {object} HttpResponse{data=[]entities.Book}
+// @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
 func (h BookService) GetAll(c *fiber.Ctx) error {
 	db := database.DB
@@ -20,10 +21,10 @@ func (h BookService) GetAll(c *fiber.Ctx) error {
 	var books = entities.Book{}
 
 	if err := db.Model(&entities.Book{}).Find(&books).Error; err != nil {
-		return SqlError(c, err)
+		return errors.SqlError(c, err)
 	}
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       books,
 	})
@@ -32,7 +33,7 @@ func (h BookService) GetAll(c *fiber.Ctx) error {
 // @Summary Get a book by ID
 // @Tags books
 // @Param id path int true " "
-// @Success 200 {object} HttpResponse{data=entities.Book}
+// @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books/{id} [get]
 func (h BookService) GetByID(c *fiber.Ctx) error {
 	db := database.DB
@@ -41,10 +42,10 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := db.Model(&entities.Book{}).First(&book, id).Error; err != nil {
-		return SqlError(c, err)
+		return errors.SqlError(c, err)
 	}
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Data:       book,
 	})
@@ -53,7 +54,7 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 // @Summary Create a new book
 // @Tags books
 // @Param body body entities.Book true " "
-// @Success 200 {object} HttpResponse{data=entities.Book}
+// @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books [post]
 func (h BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
@@ -61,7 +62,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
 		})
@@ -69,7 +70,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 
 	db.Create(&book)
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,
 		Data:       book,
 	})
@@ -79,7 +80,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 // @Tags books
 // @Param id path int true " "
 // @Param body body entities.Book true " "
-// @Success 200 {object} HttpResponse{data=entities.Book}
+// @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books/{id} [put]
 func (h BookService) Update(c *fiber.Ctx) error {
 	db := database.DB
@@ -87,7 +88,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(models.HttpResponse{
+		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      err.Error(),
 		})
@@ -95,7 +96,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 
 	db.Create(&book)
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,
 		Data:       book,
 	})
@@ -105,7 +106,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Summary Delete a book
 // @Tags books
 // @Param id path int true " "
-// @Success 200 {object} HttpResponse{}
+// @Success 200 {object} common.HttpResponse{}
 // @Router /v1/books/{id} [delete]
 func (h BookService) Delete(c *fiber.Ctx) error {
 	user := CurrentUser(c)
@@ -119,12 +120,12 @@ func (h BookService) Delete(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := db.First(&book, id).Error; err != nil {
-		return SqlError(c, err)
+		return errors.SqlError(c, err)
 	}
 
 	db.Delete(&book)
 
-	return c.JSON(models.HttpResponse{
+	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
 	})
 }

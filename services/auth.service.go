@@ -8,6 +8,7 @@ import (
 	"fiber-starter/env"
 	"fiber-starter/errors"
 	"fiber-starter/models"
+	"fiber-starter/utils"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,7 +25,7 @@ type AuthService struct{}
 // @Router /v1/auth/login [post]
 func (h AuthService) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}
-	if err, ok := Validate(c, &body); !ok {
+	if err, ok := utils.Validate(c, &body); !ok {
 		return err
 	}
 

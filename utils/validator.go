@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fiber-starter/common"
+	"fiber-starter/errors"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
@@ -17,22 +18,19 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 	validate := validator.New()
 
 	if err := c.BodyParser(payload); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusBadRequest,
-			Error:      err.Error(),
-		}), false
+		return errors.BadRequestException(c, err.Error()), false
 	}
 
 	if err := validate.Struct(payload); err != nil {
-		errors := []ApiError{}
+		error := []ApiError{}
 
 		for _, fieldError := range err.(validator.ValidationErrors) {
-			errors = append(errors, ApiError{Field: makeFirstLetterLowercase(fieldError.Field()), Message: msgForTag(fieldError)})
+			error = append(error, ApiError{Field: makeFirstLetterLowercase(fieldError.Field()), Message: message(fieldError)})
 		}
 
 		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
-			Errors:     errors,
+			Error:      error,
 		}), false
 	}
 
@@ -46,10 +44,10 @@ func makeFirstLetterLowercase(str string) string {
 	return ""
 }
 
-func msgForTag(fe validator.FieldError) string {
-	switch fe.Tag() {
+func message(fieldError validator.FieldError) string {
+	switch fieldError.Tag() {
 	case "required":
 		return "This field is required"
 	}
-	return fe.Error()
+	return fieldError.Error()
 }

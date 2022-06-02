@@ -8,28 +8,61 @@ import (
 )
 
 var (
-	DATA_NOT_FOUND    string
-	INVALID_PASSWORD  string
-	PERMISSION_DENIED string
+	DATA_NOT_FOUND    = "data not found"
+	INVALID_PASSWORD  = "invalid password"
+	PERMISSION_DENIED = "permission denied"
 )
 
-func init() {
-	DATA_NOT_FOUND = "data not found"
-	INVALID_PASSWORD = "invalid password"
-	PERMISSION_DENIED = "permission denied"
+func BadRequestException(c *fiber.Ctx, message string, err ...string) error {
+	if len(err) == 0 {
+		err = nil
+	}
+	return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusBadRequest,
+		Message:    message,
+		Error:      err,
+	})
+}
+
+func UnauthorizedException(c *fiber.Ctx, message string) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusUnauthorized,
+		Message:    message,
+	})
+}
+
+func ForbiddenException(c *fiber.Ctx, message ...string) error {
+	if len(message) == 0 {
+		message[0] = PERMISSION_DENIED
+	}
+	return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusForbidden,
+		Message:    message[0],
+	})
+}
+
+func NotFoundException(c *fiber.Ctx, message ...string) error {
+	if len(message) == 0 {
+		message[0] = DATA_NOT_FOUND
+	}
+	return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusNotFound,
+		Message:    message[0],
+	})
+}
+
+func InternalServerErrorException(c *fiber.Ctx, message string) error {
+	return c.Status(fiber.StatusInternalServerError).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusInternalServerError,
+		Message:    message,
+	})
 }
 
 func SqlError(c *fiber.Ctx, err error) error {
 	switch err {
 	case gorm.ErrRecordNotFound:
-		return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusNotFound,
-			Error:      DATA_NOT_FOUND,
-		})
+		return NotFoundException(c)
 	default:
-		return c.Status(fiber.StatusInternalServerError).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusInternalServerError,
-			Error:      err.Error(),
-		})
+		return InternalServerErrorException(c, err.Error())
 	}
 }

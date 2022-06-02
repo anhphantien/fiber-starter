@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fiber-starter/common"
 	"fiber-starter/config"
 	"fiber-starter/errors"
 	"fiber-starter/models"
@@ -19,10 +18,7 @@ func CurrentUser(c *fiber.Ctx) (models.JwtClaims, error, bool) {
 		Role:     claims["role"].(string),
 	}
 	if ok := validateUserRole(c, user); !ok {
-		return user, c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusForbidden,
-			Error:      errors.PERMISSION_DENIED,
-		}), false
+		return user, errors.ForbiddenException(c), false
 	}
 	return user, nil, true
 }

@@ -15,9 +15,15 @@ type BookService struct{}
 
 // @Summary Get all books
 // @Tags books
+// @Param limit query int false " " default(10) minimum(1) maximum(100)
+// @Param page query int false " " default(1) minimum(1)
+// @Param keyword query string false " "
+// @Param filter query object false " "
+// @Param sort query object false " "
 // @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
 func (h BookService) GetAll(c *fiber.Ctx) error {
+	fmt.Println(utils.Pagination(c))
 	db := database.DB
 
 	var books = entities.Book{}
@@ -64,10 +70,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusBadRequest,
-			Error:      err.Error(),
-		})
+		return errors.BadRequestException(c, err.Error())
 	}
 
 	db.Create(&book)
@@ -90,10 +93,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 	book := entities.Book{}
 
 	if err := c.BodyParser(&book); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
-			StatusCode: fiber.StatusBadRequest,
-			Error:      err.Error(),
-		})
+		return errors.BadRequestException(c, err.Error())
 	}
 
 	db.Create(&book)

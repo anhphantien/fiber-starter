@@ -111,7 +111,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Router /v1/books/{id} [delete]
 func (h BookService) Delete(c *fiber.Ctx) error {
 	user := utils.CurrentUser(c)
-	if err, ok := utils.RoleAuth(c, user, []string{"ADMIN", "USER"}); !ok {
+	if err, ok := utils.ValidateUserRole(c, user, []string{"ADMIN", "USER"}); !ok {
 		return err
 	}
 

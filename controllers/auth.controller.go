@@ -6,6 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func AuthController(v1 fiber.Router) {
-	v1.Post("auth/login", services.AuthService{}.Login)
+func AuthController(r fiber.Router) {
+	r.Post("auth/login", services.AuthService{}.Login)
 }

@@ -7,12 +7,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func BookController(v1 fiber.Router) {
+func BookController(r fiber.Router) {
 	// v1.Use(middlewares.JwtAuth())
 
-	v1.Get("books", services.BookService{}.GetAll)
-	v1.Get("books/:id", services.BookService{}.GetByID)
-	v1.Post("books", services.BookService{}.Create)
-	v1.Put("books/:id", services.BookService{}.Update)
-	v1.Delete("books/:id", middlewares.JwtAuth(), services.BookService{}.Delete)
+	r.Get("books", services.BookService{}.GetAll)
+	r.Get("books/:id", services.BookService{}.GetByID)
+	r.Post("books", services.BookService{}.Create)
+	r.Put("books/:id", services.BookService{}.Update)
+	r.Delete("books/:id",
+		middlewares.JwtAuth(),
+		middlewares.AdminRole,
+		middlewares.UserRole,
+		services.BookService{}.Delete,
+	)
 }

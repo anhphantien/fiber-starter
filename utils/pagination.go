@@ -3,19 +3,14 @@ package utils
 import (
 	"encoding/json"
 	"fiber-starter/dto"
-	"fmt"
+	"fiber-starter/enums"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/exp/slices"
 )
 
 func Pagination(c *fiber.Ctx) dto.Pagination {
-	fmt.Println(c.Query("limit"))
-	fmt.Println(c.Query("page"))
-	fmt.Println(c.Query("keyword"))
-	fmt.Println(c.Query("filter"))
-	fmt.Println(c.Query("sort"))
-
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	if limit < 1 || limit > 100 {
 		limit = 10
@@ -36,9 +31,9 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 	if len(sort.Field) == 0 {
 		sort.Field = "id"
 	}
-
-	fmt.Println(11111111111, sort.Field)
-	fmt.Println(22222222222, sort.Order)
+	if !slices.Contains([]string{enums.SortOrder.ASC, enums.SortOrder.DESC}, sort.Order) {
+		sort.Order = enums.SortOrder.DESC
+	}
 
 	return dto.Pagination{
 		Limit:   limit,

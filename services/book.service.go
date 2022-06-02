@@ -6,7 +6,6 @@ import (
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -55,10 +54,9 @@ func (h BookService) GetAll(c *fiber.Ctx) error {
 func (h BookService) GetByID(c *fiber.Ctx) error {
 	db := database.DB
 
-	id := c.Params("id")
 	book := entities.Book{}
 
-	if err := db.Model(&entities.Book{}).First(&book, id).Error; err != nil {
+	if err := db.Model(&entities.Book{}).First(&book, c.Params("id")).Error; err != nil {
 		return errors.SqlError(c, err)
 	}
 
@@ -120,18 +118,16 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Success 200 {object} common.HttpResponse{}
 // @Router /v1/books/{id} [delete]
 func (h BookService) Delete(c *fiber.Ctx) error {
-	user, err, ok := utils.CurrentUser(c)
-	if !ok {
-		return err
-	}
-	fmt.Println(user)
-
 	db := database.DB
 
-	id := c.Params("id")
+	// user, err, ok := utils.CurrentUser(c)
+	// if !ok {
+	// 	return err
+	// }
+
 	book := entities.Book{}
 
-	if err := db.First(&book, id).Error; err != nil {
+	if err := db.First(&book, c.Params("id")).Error; err != nil {
 		return errors.SqlError(c, err)
 	}
 

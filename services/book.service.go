@@ -23,15 +23,22 @@ type BookService struct{}
 // @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
 func (h BookService) GetAll(c *fiber.Ctx) error {
-	pagination := utils.Pagination(c)
-	fmt.Println(pagination)
-
 	db := database.DB
 
-	var books = entities.Book{}
+	books := entities.Book{}
 
-	if err := db.Model(&entities.Book{}).Find(&books).Error; err != nil {
-		return errors.SqlError(c, err)
+	pagination := utils.Pagination(c)
+	q := db.
+		Model(&entities.Book{})
+	if len(pagination.Keyword) > 0 {
+		q.Where("name = ?", pagination.Keyword)
+	}
+	q.Limit(pagination.Limit).
+		Offset(pagination.Limit * (pagination.Page - 1)).
+		Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+		Find(&books)
+	if q.Error != nil {
+		return errors.SqlError(c, q.Error)
 	}
 
 	return c.JSON(common.HttpResponse{

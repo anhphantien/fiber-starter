@@ -6,6 +6,7 @@ import (
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -110,10 +111,11 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Success 200 {object} common.HttpResponse{}
 // @Router /v1/books/{id} [delete]
 func (h BookService) Delete(c *fiber.Ctx) error {
-	user := utils.CurrentUser(c)
-	if err, ok := utils.ValidateUserRole(c, user, []string{"ADMIN", "USER"}); !ok {
+	user, err, ok := utils.CurrentUser(c)
+	if !ok {
 		return err
 	}
+	fmt.Println(user)
 
 	db := database.DB
 

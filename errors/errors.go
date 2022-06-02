@@ -13,14 +13,10 @@ var (
 	PERMISSION_DENIED = "permission denied"
 )
 
-func BadRequestException(c *fiber.Ctx, message string, err ...string) error {
-	if len(err) == 0 {
-		err = nil
-	}
+func BadRequestException(c *fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 		StatusCode: fiber.StatusBadRequest,
 		Message:    message,
-		Error:      err,
 	})
 }
 

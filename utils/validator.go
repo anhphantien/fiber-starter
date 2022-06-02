@@ -22,15 +22,18 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 	}
 
 	if err := validate.Struct(payload); err != nil {
-		error := []ApiError{}
+		_error := []ApiError{}
 
 		for _, fieldError := range err.(validator.ValidationErrors) {
-			error = append(error, ApiError{Field: makeFirstLetterLowercase(fieldError.Field()), Message: message(fieldError)})
+			_error = append(_error, ApiError{
+				Field:   makeFirstLetterLowercase(fieldError.Field()),
+				Message: message(fieldError),
+			})
 		}
 
 		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
-			Error:      error,
+			Error:      _error,
 		}), false
 	}
 

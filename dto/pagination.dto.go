@@ -1,12 +1,14 @@
 package dto
 
+type Sort struct {
+	Field string
+	Order string
+}
+
 type Pagination struct {
 	Limit   int
 	Page    int
 	Keyword string
-	Filter  any
-	Sort    any
+	Filter  map[string]any
+	Sort    Sort
 }
-
-// filter any { [key: string]: any } = {};
-// sort: Sort = { field: 'id', order: 'DESC' };

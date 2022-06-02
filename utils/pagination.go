@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fiber-starter/dto"
 	"fmt"
 	"strconv"
@@ -21,15 +22,29 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 	}
 
 	page, _ := strconv.Atoi(c.Query("page"))
-	if limit < 1 {
-		limit = 1
+	if page < 1 {
+		page = 1
 	}
 
 	keyword := c.Query("keyword")
+
+	filter := map[string]any{}
+	json.Unmarshal([]byte(c.Query("filter")), &filter)
+
+	sort := dto.Sort{}
+	json.Unmarshal([]byte(c.Query("sort")), &sort)
+	if len(sort.Field) == 0 {
+		sort.Field = "id"
+	}
+
+	fmt.Println(11111111111, sort.Field)
+	fmt.Println(22222222222, sort.Order)
 
 	return dto.Pagination{
 		Limit:   limit,
 		Page:    page,
 		Keyword: keyword,
+		Filter:  filter,
+		Sort:    sort,
 	}
 }

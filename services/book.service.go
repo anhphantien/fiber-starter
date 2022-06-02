@@ -23,7 +23,9 @@ type BookService struct{}
 // @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
 func (h BookService) GetAll(c *fiber.Ctx) error {
-	fmt.Println(utils.Pagination(c))
+	pagination := utils.Pagination(c)
+	fmt.Println(pagination)
+
 	db := database.DB
 
 	var books = entities.Book{}

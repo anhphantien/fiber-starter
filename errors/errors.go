@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
+const (
 	DATA_NOT_FOUND    = "data not found"
 	INVALID_PASSWORD  = "invalid password"
 	PERMISSION_DENIED = "permission denied"

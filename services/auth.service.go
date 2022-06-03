@@ -24,18 +24,20 @@ type AuthService struct{}
 // @Success 200 {object} common.HttpResponse{data=models.LoginResponse}
 // @Router /v1/auth/login [post]
 func (h AuthService) Login(c *fiber.Ctx) error {
+	db := database.DB
+
 	body := dto.LoginBody{}
 	if err, ok := utils.Validate(c, &body); !ok {
 		return err
 	}
 
-	db := database.DB
-
 	user := entities.User{}
-	if err := db.
-		Model(&entities.User{}).
-		First(&user, entities.User{Username: &body.Username}).Error; err != nil {
-		return errors.SqlError(c, err)
+	q := db.
+		Model(&user).
+		Where("username = ?", body.Username).
+		First(&user)
+	if q.Error != nil {
+		return errors.SqlError(c, q.Error)
 	}
 	if err := bcrypt.
 		CompareHashAndPassword([]byte(*user.HashedPassword), []byte(body.Password)); err != nil {

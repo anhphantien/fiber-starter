@@ -14,7 +14,7 @@ func BookController(r fiber.Router) {
 	// 	middlewares.UserRole,
 	// )
 
-	r.Get("books", services.BookService{}.GetAll)
+	r.Get("books", services.BookService{}.GetList)
 
 	r.Get("books/:id", services.BookService{}.GetByID)
 

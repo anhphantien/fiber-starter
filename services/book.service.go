@@ -1,11 +1,14 @@
 package services
 
 import (
+	"database/sql"
 	"fiber-starter/common"
 	"fiber-starter/database"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
+	"fiber-starter/repositories"
 	"fiber-starter/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,28 +24,48 @@ type BookService struct{}
 // @Param sort query object false " "
 // @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
-func (h BookService) GetAll(c *fiber.Ctx) error {
+func (h BookService) GetList(c *fiber.Ctx) error {
 	db := database.DB
 
-	books := entities.Book{}
+	books := []entities.Book{}
 
 	pagination := utils.Pagination(c)
-	q := db.
-		Model(&entities.Book{})
+
+	q := db.Model(&books)
+	if pagination.Filter["id"] != nil {
+		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
+	}
 	if len(pagination.Keyword) > 0 {
-		q.Where("name = ?", pagination.Keyword)
+		q.Where(
+			"title LIKE @keyword OR description LIKE @keyword",
+			sql.Named("keyword", "%"+pagination.Keyword+"%"),
+		)
 	}
-	q.Limit(pagination.Limit).
-		Offset(pagination.Limit * (pagination.Page - 1)).
-		Order(pagination.Sort.Field + " " + pagination.Sort.Order).
-		Find(&books)
-	if q.Error != nil {
-		return errors.SqlError(c, q.Error)
-	}
+
+	// var total int64
+	// q.Count(&total)
+
+	// q.Limit(pagination.Limit).
+	// 	Offset(pagination.Limit * (pagination.Page - 1)).
+	// 	Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
+	// if q.Error != nil {
+	// 	return errors.SqlError(c, q.Error)
+	// }
+
+	var total int64
+	ch1, ch2 :=
+		repositories.BookRepository{}.GetCount(c, q, total),
+		repositories.BookRepository{}.GetItems(c, q, pagination, books)
+	a, b := <-ch1, <-ch2
+	fmt.Println(a, b)
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       books,
+		Data: common.PaginationResponse{
+			Items: books,
+			Total: total,
+		},
 	})
 }
 
@@ -56,8 +79,10 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 
 	book := entities.Book{}
 
-	if err := db.Model(&entities.Book{}).First(&book, c.Params("id")).Error; err != nil {
-		return errors.SqlError(c, err)
+	id := utils.ConvertToInt(c.Params("id"))
+	q := db.Model(&book).Where("id = ?", id).First(&book)
+	if q.Error != nil {
+		return errors.SqlError(c, q.Error)
 	}
 
 	return c.JSON(common.HttpResponse{

@@ -29,7 +29,10 @@ func UnauthorizedException(c *fiber.Ctx, message string) error {
 
 func ForbiddenException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		message[0] = PERMISSION_DENIED
+		return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
+			StatusCode: fiber.StatusForbidden,
+			Message:    PERMISSION_DENIED,
+		})
 	}
 	return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
 		StatusCode: fiber.StatusForbidden,
@@ -39,7 +42,10 @@ func ForbiddenException(c *fiber.Ctx, message ...string) error {
 
 func NotFoundException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		message[0] = DATA_NOT_FOUND
+		return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
+			StatusCode: fiber.StatusNotFound,
+			Message:    DATA_NOT_FOUND,
+		})
 	}
 	return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
 		StatusCode: fiber.StatusNotFound,

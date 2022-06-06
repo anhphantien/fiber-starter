@@ -68,7 +68,9 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	go func() error {
 		defer wg.Done()
 
-		q.Limit(pagination.Limit).
+		q.
+			Session(&gorm.Session{}). // clone
+			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
 			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&books)

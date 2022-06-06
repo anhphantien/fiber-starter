@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -126,11 +127,8 @@ func (h BookService) Create(c *fiber.Ctx) error {
 		return err
 	}
 
-	book := entities.Book{
-		Title:       body.Title,
-		Description: body.Description,
-		Content:     body.Content,
-	}
+	book := entities.Book{}
+	copier.Copy(&book, &body)
 
 	q := db.Create(&book)
 	if q.Error != nil {

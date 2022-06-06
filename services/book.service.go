@@ -6,11 +6,11 @@ import (
 	"fiber-starter/database"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
-	"fiber-starter/repositories"
 	"fiber-starter/utils"
-	"fmt"
+	"sync"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type BookService struct{}
@@ -53,12 +53,31 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	// 	return errors.SqlError(c, q.Error)
 	// }
 
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
 	var total int64
-	ch1, ch2 :=
-		repositories.BookRepository{}.GetCount(c, q, total),
-		repositories.BookRepository{}.GetItems(c, q, pagination, books)
-	a, b := <-ch1, <-ch2
-	fmt.Println(a, b)
+	go func() {
+		defer wg.Done()
+
+		q.
+			Session(&gorm.Session{}). // clone
+			Count(&total)
+	}()
+
+	go func() error {
+		defer wg.Done()
+
+		q.Limit(pagination.Limit).
+			Offset(pagination.Limit * (pagination.Page - 1)).
+			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+			Find(&books)
+		if q.Error != nil {
+			return errors.SqlError(c, q.Error)
+		}
+		return nil
+	}()
+	wg.Wait()
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,

@@ -51,6 +51,8 @@ func message(fieldError validator.FieldError) string {
 	switch fieldError.Tag() {
 	case "required":
 		return "This field is required"
+	case "max":
+		return "Max length: " + fieldError.Param()
 	}
 	return fieldError.Error()
 }

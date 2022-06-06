@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fiber-starter/common"
 	"fiber-starter/database"
+	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/utils"
@@ -114,19 +115,27 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 
 // @Summary Create a new book
 // @Tags books
-// @Param body body entities.Book true " "
+// @Param body body dto.CreateBookBody true " "
 // @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books [post]
 func (h BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
 
-	book := entities.Book{}
-
-	if err := c.BodyParser(&book); err != nil {
-		return errors.BadRequestException(c, err.Error())
+	body := dto.CreateBookBody{}
+	if err, ok := utils.Validate(c, &body); !ok {
+		return err
 	}
 
-	db.Create(&book)
+	book := entities.Book{
+		Title:       body.Title,
+		Description: body.Description,
+		Content:     body.Content,
+	}
+
+	q := db.Create(&book)
+	if q.Error != nil {
+		return errors.SqlError(c, q.Error)
+	}
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,

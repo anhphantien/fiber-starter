@@ -58,23 +58,24 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	// 	return errors.SqlError(c, r2.Error)
 	// }
 
+	ch := make(chan error, 2)
+
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
 	var total int64
-	go func() error {
+	go func() {
 		defer wg.Done()
 
 		r1 := q.
 			Session(&gorm.Session{}). // clone
 			Count(&total)
 		if r1.Error != nil {
-			return errors.SqlError(c, r1.Error)
+			ch <- r1.Error
 		}
-		return nil
 	}()
 
-	go func() error {
+	go func() {
 		defer wg.Done()
 
 		r2 := q.
@@ -84,11 +85,18 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&books)
 		if r2.Error != nil {
-			return errors.SqlError(c, r2.Error)
+			ch <- r2.Error
 		}
-		return nil
 	}()
+
 	wg.Wait()
+	close(ch)
+
+	for err := range ch {
+		if err != nil {
+			return errors.SqlError(c, err)
+		}
+	}
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,

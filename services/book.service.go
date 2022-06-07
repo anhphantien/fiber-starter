@@ -45,14 +45,17 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	}
 
 	// var total int64
-	// q.Count(&total)
+	// r1 := q.Count(&total)
+	// if r1.Error != nil {
+	// 	return errors.SqlError(c, r1.Error)
+	// }
 
-	// q.Limit(pagination.Limit).
+	// r2 := q.Limit(pagination.Limit).
 	// 	Offset(pagination.Limit * (pagination.Page - 1)).
 	// 	Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
-	// if q.Error != nil {
-	// 	return errors.SqlError(c, q.Error)
+	// if r2.Error != nil {
+	// 	return errors.SqlError(c, r2.Error)
 	// }
 
 	wg := sync.WaitGroup{}
@@ -66,7 +69,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 			Session(&gorm.Session{}). // clone
 			Count(&total)
 		if r1.Error != nil {
-			return errors.SqlError(c, q.Error)
+			return errors.SqlError(c, r1.Error)
 		}
 		return nil
 	}()
@@ -81,7 +84,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&books)
 		if r2.Error != nil {
-			return errors.SqlError(c, q.Error)
+			return errors.SqlError(c, r2.Error)
 		}
 		return nil
 	}()

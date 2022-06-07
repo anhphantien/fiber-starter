@@ -196,8 +196,9 @@ func (h BookService) Delete(c *fiber.Ctx) error {
 
 	book := entities.Book{}
 
-	if err := db.First(&book, c.Params("id")).Error; err != nil {
-		return errors.SqlError(c, err)
+	r := db.First(&book, c.Params("id"))
+	if r != nil {
+		return errors.SqlError(c, r.Error)
 	}
 
 	db.Delete(&book)

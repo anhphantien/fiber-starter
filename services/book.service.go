@@ -162,14 +162,16 @@ func (h BookService) Update(c *fiber.Ctx) error {
 	book := entities.Book{}
 	id := utils.ConvertToInt(c.Params("id"))
 
-	q := db.Model(book).Session(&gorm.Session{})
-	r1 := q.Where("id = ?", id).First(&book)
+	// q := db.Model(book).Session(&gorm.Session{})
+	// r1 := q.Where("id = ?", id).First(&book)
+	r1 := db.Model(book).Where("id = ?", id).First(&book)
 	if r1.Error != nil {
 		return errors.SqlError(c, r1.Error)
 	}
 
-	copier.Copy(&book, &body)
-	r2 := q.Where("id = ?", id).Updates(&book)
+	copier.CopyWithOption(&book, &body, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	// r2 := q.Where("id = ?", id).Updates(&book)
+	r2 := db.Updates(&book)
 	if r2.Error != nil {
 		return errors.SqlError(c, r2.Error)
 	}
@@ -204,7 +206,7 @@ func (h BookService) Delete(c *fiber.Ctx) error {
 
 	r2 := db.Delete(&book)
 	if r2.Error != nil {
-		return errors.SqlError(c, r1.Error)
+		return errors.SqlError(c, r2.Error)
 	}
 
 	return c.JSON(common.HttpResponse{

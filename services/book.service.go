@@ -33,7 +33,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 
 	pagination := utils.Pagination(c)
 
-	q := db.Model(&books)
+	q := db.Model(books)
 	if pagination.Filter["id"] != nil {
 		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
 	}
@@ -59,24 +59,28 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	wg.Add(2)
 
 	var total int64
-	go func() {
+	go func() error {
 		defer wg.Done()
 
-		q.
+		r1 := q.
 			Session(&gorm.Session{}). // clone
 			Count(&total)
+		if r1.Error != nil {
+			return errors.SqlError(c, q.Error)
+		}
+		return nil
 	}()
 
 	go func() error {
 		defer wg.Done()
 
-		q.
+		r2 := q.
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
 			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&books)
-		if q.Error != nil {
+		if r2.Error != nil {
 			return errors.SqlError(c, q.Error)
 		}
 		return nil
@@ -101,11 +105,11 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 	db := database.DB
 
 	book := entities.Book{}
-
 	id := utils.ConvertToInt(c.Params("id"))
-	q := db.Model(&book).Where("id = ?", id).First(&book)
-	if q.Error != nil {
-		return errors.SqlError(c, q.Error)
+
+	r := db.Model(book).Where("id = ?", id).First(&book)
+	if r.Error != nil {
+		return errors.SqlError(c, r.Error)
 	}
 
 	return c.JSON(common.HttpResponse{
@@ -130,9 +134,9 @@ func (h BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 	copier.Copy(&book, &body)
 
-	q := db.Create(&book)
-	if q.Error != nil {
-		return errors.SqlError(c, q.Error)
+	r := db.Create(&book)
+	if r.Error != nil {
+		return errors.SqlError(c, r.Error)
 	}
 
 	return c.JSON(common.HttpResponse{
@@ -156,31 +160,19 @@ func (h BookService) Update(c *fiber.Ctx) error {
 	}
 
 	book := entities.Book{}
-
 	id := utils.ConvertToInt(c.Params("id"))
-	q := db.Model(&book).Where("id = ?", id).First(&book)
-	if q.Error != nil {
-		return errors.SqlError(c, q.Error)
+
+	q := db.Model(book).Session(&gorm.Session{})
+	r1 := q.Where("id = ?", id).First(&book)
+	if r1.Error != nil {
+		return errors.SqlError(c, r1.Error)
 	}
 
 	copier.Copy(&book, &body)
-	q.Updates(&book)
-
-	// q := db.Model(&book).Session(&gorm.Session{DryRun: true})
-	// q.
-	// 	Where("id = ?", id).
-	// 	First(&book)
-	// if q.Error != nil {
-	// 	return errors.SqlError(c, q.Error)
-	// }
-
-	// copier.Copy(&book, &body)
-	// q.
-	// 	Where("id = ?", 2).
-	// 	Updates(&book)
-	// if q.Error != nil {
-	// 	return errors.SqlError(c, q.Error)
-	// }
+	r2 := q.Where("id = ?", id).Updates(&book)
+	if r2.Error != nil {
+		return errors.SqlError(c, r2.Error)
+	}
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,

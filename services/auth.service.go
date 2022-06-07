@@ -32,12 +32,12 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 	}
 
 	user := entities.User{}
-	q := db.
+	r := db.
 		Model(&user).
 		Where("username = ?", body.Username).
 		First(&user)
-	if q.Error != nil {
-		return errors.SqlError(c, q.Error)
+	if r.Error != nil {
+		return errors.SqlError(c, r.Error)
 	}
 	if err := bcrypt.
 		CompareHashAndPassword([]byte(*user.HashedPassword), []byte(body.Password)); err != nil {

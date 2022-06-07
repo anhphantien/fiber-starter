@@ -195,13 +195,17 @@ func (h BookService) Delete(c *fiber.Ctx) error {
 	// }
 
 	book := entities.Book{}
+	id := utils.ConvertToInt(c.Params("id"))
 
-	r := db.First(&book, c.Params("id"))
-	if r != nil {
-		return errors.SqlError(c, r.Error)
+	r1 := db.Model(book).Where("id = ?", id).First(&book)
+	if r1.Error != nil {
+		return errors.SqlError(c, r1.Error)
 	}
 
-	db.Delete(&book)
+	r2 := db.Delete(&book)
+	if r2.Error != nil {
+		return errors.SqlError(c, r1.Error)
+	}
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,

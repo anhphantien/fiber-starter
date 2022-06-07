@@ -19,8 +19,8 @@ type BookService struct{}
 
 // @Summary Get all books
 // @Tags books
-// @Param limit query int false " " default(10) minimum(1) maximum(100)
-// @Param page query int false " " default(1) minimum(1)
+// @Param limit query int false " "
+// @Param page query int false " "
 // @Param keyword query string false " "
 // @Param filter query object false " "
 // @Param sort query object false " "
@@ -144,19 +144,43 @@ func (h BookService) Create(c *fiber.Ctx) error {
 // @Summary Update a book
 // @Tags books
 // @Param id path int true " "
-// @Param body body entities.Book true " "
+// @Param body body dto.UpdateBookBody true " "
 // @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books/{id} [put]
 func (h BookService) Update(c *fiber.Ctx) error {
 	db := database.DB
 
-	book := entities.Book{}
-
-	if err := c.BodyParser(&book); err != nil {
-		return errors.BadRequestException(c, err.Error())
+	body := dto.UpdateBookBody{}
+	if err, ok := utils.Validate(c, &body); !ok {
+		return err
 	}
 
-	db.Create(&book)
+	book := entities.Book{}
+
+	id := utils.ConvertToInt(c.Params("id"))
+	q := db.Model(&book).Where("id = ?", id).First(&book)
+	if q.Error != nil {
+		return errors.SqlError(c, q.Error)
+	}
+
+	copier.Copy(&book, &body)
+	q.Updates(&book)
+
+	// q := db.Model(&book).Session(&gorm.Session{DryRun: true})
+	// q.
+	// 	Where("id = ?", id).
+	// 	First(&book)
+	// if q.Error != nil {
+	// 	return errors.SqlError(c, q.Error)
+	// }
+
+	// copier.Copy(&book, &body)
+	// q.
+	// 	Where("id = ?", 2).
+	// 	Updates(&book)
+	// if q.Error != nil {
+	// 	return errors.SqlError(c, q.Error)
+	// }
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,

@@ -33,7 +33,9 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 
 	pagination := utils.Pagination(c)
 
-	q := db.Model(books)
+	q := db.
+		Model(books).
+		Joins("LEFT JOIN user ON book.user_id = user.id")
 	if pagination.Filter["id"] != nil {
 		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
 	}

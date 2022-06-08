@@ -35,7 +35,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 
 	q := db.
 		Model(books).
-		Joins("LEFT JOIN user ON book.user_id = user.id")
+		Joins("User")
 	if pagination.Filter["id"] != nil {
 		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
 	}
@@ -84,7 +84,8 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
-			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+			// Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+			Order("book." + pagination.Sort.Field + " " + pagination.Sort.Order). // if use LEFT JOIN/INNER JOIN
 			Find(&books)
 		if r2.Error != nil {
 			ch <- r2.Error

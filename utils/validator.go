@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ApiError struct {
+type Error struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`
 }
@@ -23,10 +23,10 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 
 	if err := validate.Struct(payload); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
-		_error := make([]ApiError, len(validationErrors))
+		errors := make([]Error, len(validationErrors))
 
 		for i, fieldError := range validationErrors {
-			_error[i] = ApiError{
+			errors[i] = Error{
 				Field:   makeFirstLetterLowercase(fieldError.Field()),
 				Message: message(fieldError),
 			}
@@ -34,7 +34,7 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 
 		return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
 			StatusCode: fiber.StatusBadRequest,
-			Error:      _error,
+			Error:      errors,
 		}), false
 	}
 

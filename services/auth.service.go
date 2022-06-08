@@ -40,7 +40,10 @@ func (h AuthService) Login(c *fiber.Ctx) error {
 		return errors.SqlError(c, r.Error)
 	}
 	if err := bcrypt.
-		CompareHashAndPassword([]byte(*user.HashedPassword), []byte(body.Password)); err != nil {
+		CompareHashAndPassword(
+			[]byte(*user.HashedPassword),
+			[]byte(body.Password),
+		); err != nil {
 		switch err {
 		case bcrypt.ErrMismatchedHashAndPassword:
 			return errors.BadRequestException(c, errors.INVALID_PASSWORD)

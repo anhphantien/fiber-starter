@@ -142,6 +142,14 @@ func (h BookService) Create(c *fiber.Ctx) error {
 		return err
 	}
 
+	if body.UserID != nil {
+		user := entities.User{}
+		r := db.Model(user).Where("id = ?", body.UserID).First(&user)
+		if r.Error != nil {
+			return errors.SqlError(c, r.Error)
+		}
+	}
+
 	book := entities.Book{}
 	copier.Copy(&book, &body)
 

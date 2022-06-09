@@ -36,7 +36,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	q := db.
 		Model(books).
 		// Joins("User") // LEFT JOIN
-		Select("book.*, user.id AS User__id, user.username AS User__username").
+		Select("`book`.*" + utils.GetAllColumnsOfTableQuery(entities.User{})).
 		Joins("INNER JOIN user ON book.user_id = user.id")
 	if pagination.Filter["id"] != nil {
 		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
@@ -56,7 +56,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 
 	// r2 := q.Limit(pagination.Limit).
 	// 	Offset(pagination.Limit * (pagination.Page - 1)).
-	// 	Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+	// 	Order("book." + pagination.Sort.Field + " " + pagination.Sort.Order).
 	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
 	// if r2.Error != nil {
 	// 	return errors.SqlError(c, r2.Error)

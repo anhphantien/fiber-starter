@@ -12,7 +12,7 @@ type Model interface {
 	TableName() string
 }
 
-func GetAllColumnsOfTableQuery(model Model) string {
+func GetAllColumnNamesFromTable(model Model) string {
 	s := []string{}
 
 	r := regexp.MustCompile(`column:\w+`)

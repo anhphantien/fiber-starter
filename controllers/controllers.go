@@ -12,9 +12,7 @@ func New() *fiber.App {
 
 	app.Get("swagger/*", swagger.HandlerDefault)
 
-	api := app.Group("api")
-
-	v1 := api.Group("v1")
+	v1 := app.Group("api/v1")
 	AuthController(v1)
 	BookController(v1)
 

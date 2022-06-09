@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"fiber-starter/config"
 	"fiber-starter/errors"
+	"fiber-starter/middlewares"
 	"fiber-starter/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,12 +26,10 @@ func CurrentUser(c *fiber.Ctx) (models.JwtClaims, error, bool) {
 func validateUserRole(c *fiber.Ctx, user models.JwtClaims) bool {
 	roles := []string{}
 
-	ADMIN, ok := c.Locals(config.ADMIN_ROLE).(string)
-	if ok {
+	if ADMIN, ok := c.Locals(middlewares.ADMIN_ROLE).(string); ok {
 		roles = append(roles, ADMIN)
 	}
-	USER, ok := c.Locals(config.USER_ROLE).(string)
-	if ok {
+	if USER, ok := c.Locals(middlewares.USER_ROLE).(string); ok {
 		roles = append(roles, USER)
 	}
 

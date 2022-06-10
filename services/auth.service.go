@@ -18,12 +18,12 @@ import (
 
 type AuthService struct{}
 
-// @Summary Sign in
+// @Summary Login
 // @Tags auth
 // @Param body body dto.LoginBody true " "
 // @Success 200 {object} common.HttpResponse{data=models.LoginResponse}
 // @Router /v1/auth/login [post]
-func (h AuthService) Login(c *fiber.Ctx) error {
+func (s AuthService) Login(c *fiber.Ctx) error {
 	db := database.DB
 
 	body := dto.LoginBody{}

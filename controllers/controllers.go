@@ -15,6 +15,7 @@ func New() *fiber.App {
 	v1 := app.Group("api/v1")
 	AuthController(v1)
 	BookController(v1)
+	UserController(v1)
 
 	return app
 }

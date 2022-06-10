@@ -17,7 +17,7 @@ import (
 
 type BookService struct{}
 
-// @Summary Get all books
+// @Summary Get a list of books
 // @Tags books
 // @Param limit query int false " "
 // @Param page query int false " "
@@ -26,7 +26,7 @@ type BookService struct{}
 // @Param sort query object false " "
 // @Success 200 {object} common.HttpResponse{data=[]entities.Book}
 // @Router /v1/books [get]
-func (h BookService) GetList(c *fiber.Ctx) error {
+func (s BookService) GetList(c *fiber.Ctx) error {
 	db := database.DB
 
 	books := []entities.Book{}
@@ -71,26 +71,26 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 	go func() {
 		defer wg.Done()
 
-		r1 := q.
+		r := q.
 			Session(&gorm.Session{}). // clone
 			Count(&total)
-		if r1.Error != nil {
-			ch <- r1.Error
+		if r.Error != nil {
+			ch <- r.Error
 		}
 	}()
 
 	go func() {
 		defer wg.Done()
 
-		r2 := q.
+		r := q.
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
 			// Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Order("book." + pagination.Sort.Field + " " + pagination.Sort.Order). // if use LEFT JOIN/INNER JOIN
 			Find(&books)
-		if r2.Error != nil {
-			ch <- r2.Error
+		if r.Error != nil {
+			ch <- r.Error
 		}
 	}()
 
@@ -117,7 +117,7 @@ func (h BookService) GetList(c *fiber.Ctx) error {
 // @Param id path int true " "
 // @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books/{id} [get]
-func (h BookService) GetByID(c *fiber.Ctx) error {
+func (s BookService) GetByID(c *fiber.Ctx) error {
 	db := database.DB
 
 	book := entities.Book{}
@@ -139,7 +139,7 @@ func (h BookService) GetByID(c *fiber.Ctx) error {
 // @Param body body dto.CreateBookBody true " "
 // @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books [post]
-func (h BookService) Create(c *fiber.Ctx) error {
+func (s BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
 
 	body := dto.CreateBookBody{}
@@ -175,7 +175,7 @@ func (h BookService) Create(c *fiber.Ctx) error {
 // @Param body body dto.UpdateBookBody true " "
 // @Success 200 {object} common.HttpResponse{data=entities.Book}
 // @Router /v1/books/{id} [put]
-func (h BookService) Update(c *fiber.Ctx) error {
+func (s BookService) Update(c *fiber.Ctx) error {
 	db := database.DB
 
 	body := dto.UpdateBookBody{}
@@ -212,7 +212,7 @@ func (h BookService) Update(c *fiber.Ctx) error {
 // @Param id path int true " "
 // @Success 200 {object} common.HttpResponse{}
 // @Router /v1/books/{id} [delete]
-func (h BookService) Delete(c *fiber.Ctx) error {
+func (s BookService) Delete(c *fiber.Ctx) error {
 	db := database.DB
 
 	// user, err, ok := utils.CurrentUser(c)

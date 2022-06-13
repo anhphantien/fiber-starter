@@ -6,7 +6,9 @@ import (
 )
 
 func New() *fiber.App {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 50 * 1024 * 1024,
+	})
 
 	// app.Use(cors.New())
 
@@ -15,6 +17,7 @@ func New() *fiber.App {
 	v1 := app.Group("api/v1")
 	AuthController(v1)
 	BookController(v1)
+	FileController(v1)
 	UserController(v1)
 
 	return app

@@ -33,10 +33,10 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 	}
 	if !slices.Contains(
 		[]string{
-			enums.SortOrder.ASC,
-			enums.SortOrder.DESC,
+			enums.Sort.Order.ASC,
+			enums.Sort.Order.DESC,
 		}, sort.Order) {
-		sort.Order = enums.SortOrder.DESC
+		sort.Order = enums.Sort.Order.DESC
 	}
 
 	return dto.Pagination{

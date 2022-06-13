@@ -1,11 +1,19 @@
 package enums
 
-type _SortOrder struct {
+type __Order struct {
 	ASC  string
 	DESC string
 }
 
-var SortOrder = _SortOrder{
+var _Order = __Order{
 	ASC:  "ASC",
 	DESC: "DESC",
+}
+
+type _Sort struct {
+	Order __Order
+}
+
+var Sort = _Sort{
+	Order: _Order,
 }

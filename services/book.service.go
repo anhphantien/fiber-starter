@@ -17,15 +17,15 @@ import (
 
 type BookService struct{}
 
+// @Tags    books
 // @Summary Get a list of books
-// @Tags books
-// @Param limit query int false " "
-// @Param page query int false " "
-// @Param keyword query string false " "
-// @Param filter query object false " "
-// @Param sort query object false " "
-// @Success 200 {object} common.HttpResponse{data=[]entities.Book}
-// @Router /v1/books [get]
+// @Param   limit     query    int false " "
+// @Param   page      query    int false " "
+// @Param   keyword   query    string false " "
+// @Param   filter    query    object false " "
+// @Param   sort      query    object false " "
+// @Success 200       {object} common.HttpResponse{data=[]entities.Book}
+// @Router  /v1/books [get]
 func (s BookService) GetList(c *fiber.Ctx) error {
 	db := database.DB
 
@@ -112,11 +112,11 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	})
 }
 
+// @Tags    books
 // @Summary Get a book by ID
-// @Tags books
-// @Param id path int true " "
-// @Success 200 {object} common.HttpResponse{data=entities.Book}
-// @Router /v1/books/{id} [get]
+// @Param   id             path     int true " "
+// @Success 200            {object} common.HttpResponse{data=entities.Book}
+// @Router  /v1/books/{id} [get]
 func (s BookService) GetByID(c *fiber.Ctx) error {
 	db := database.DB
 
@@ -134,11 +134,11 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 	})
 }
 
+// @Tags    books
 // @Summary Create a new book
-// @Tags books
-// @Param body body dto.CreateBookBody true " "
-// @Success 200 {object} common.HttpResponse{data=entities.Book}
-// @Router /v1/books [post]
+// @Param   body      body     dto.CreateBookBody true " "
+// @Success 200       {object} common.HttpResponse{data=entities.Book}
+// @Router  /v1/books [post]
 func (s BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
 
@@ -169,12 +169,12 @@ func (s BookService) Create(c *fiber.Ctx) error {
 	})
 }
 
+// @Tags    books
 // @Summary Update a book
-// @Tags books
-// @Param id path int true " "
-// @Param body body dto.UpdateBookBody true " "
-// @Success 200 {object} common.HttpResponse{data=entities.Book}
-// @Router /v1/books/{id} [put]
+// @Param   id             path     int true " "
+// @Param   body           body     dto.UpdateBookBody true " "
+// @Success 200            {object} common.HttpResponse{data=entities.Book}
+// @Router  /v1/books/{id} [put]
 func (s BookService) Update(c *fiber.Ctx) error {
 	db := database.DB
 
@@ -207,11 +207,11 @@ func (s BookService) Update(c *fiber.Ctx) error {
 }
 
 // @Security BearerAuth
-// @Summary Delete a book
-// @Tags books
-// @Param id path int true " "
-// @Success 200 {object} common.HttpResponse{}
-// @Router /v1/books/{id} [delete]
+// @Summary  Delete a book
+// @Tags     books
+// @Param    id             path     int true " "
+// @Success  200            {object} common.HttpResponse{}
+// @Router   /v1/books/{id} [delete]
 func (s BookService) Delete(c *fiber.Ctx) error {
 	db := database.DB
 

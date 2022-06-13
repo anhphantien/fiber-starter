@@ -12,11 +12,11 @@ const (
 )
 
 func AdminRole(c *fiber.Ctx) error {
-	c.Locals(ADMIN_ROLE, enums.UserRole.ADMIN)
+	c.Locals(ADMIN_ROLE, enums.User.Role.ADMIN)
 	return c.Next()
 }
 
 func UserRole(c *fiber.Ctx) error {
-	c.Locals(USER_ROLE, enums.UserRole.USER)
+	c.Locals(USER_ROLE, enums.User.Role.USER)
 	return c.Next()
 }

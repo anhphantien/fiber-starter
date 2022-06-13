@@ -8,9 +8,12 @@ import (
 )
 
 const (
-	DATA_NOT_FOUND    = "data not found"
-	INVALID_PASSWORD  = "invalid password"
-	PERMISSION_DENIED = "permission denied"
+	DATA_NOT_FOUND      = "data not found"
+	FILE_NOT_FOUND      = "file not found"
+	INVALID_FILE_FORMAT = "invalid file format"
+	INVALID_PASSWORD    = "invalid password"
+	PAYLOAD_TOO_LARGE   = "payload too large"
+	PERMISSION_DENIED   = "permission denied"
 )
 
 func BadRequestException(c *fiber.Ctx, message string) error {
@@ -49,6 +52,19 @@ func NotFoundException(c *fiber.Ctx, message ...string) error {
 	}
 	return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
 		StatusCode: fiber.StatusNotFound,
+		Message:    message[0],
+	})
+}
+
+func RequestEntityTooLargeException(c *fiber.Ctx, message ...string) error {
+	if len(message) == 0 {
+		return c.Status(fiber.StatusRequestEntityTooLarge).JSON(common.HttpResponse{
+			StatusCode: fiber.StatusRequestEntityTooLarge,
+			Message:    PAYLOAD_TOO_LARGE,
+		})
+	}
+	return c.Status(fiber.StatusRequestEntityTooLarge).JSON(common.HttpResponse{
+		StatusCode: fiber.StatusRequestEntityTooLarge,
 		Message:    message[0],
 	})
 }

@@ -14,15 +14,15 @@ import (
 
 type UserService struct{}
 
+// @Tags    users
 // @Summary Get a list of users
-// @Tags users
-// @Param limit query int false " "
-// @Param page query int false " "
-// @Param keyword query string false " "
-// @Param filter query object false " "
-// @Param sort query object false " "
-// @Success 200 {object} common.HttpResponse{data=[]entities.User}
-// @Router /v1/users [get]
+// @Param   limit     query    int false " "
+// @Param   page      query    int false " "
+// @Param   keyword   query    string false " "
+// @Param   filter    query    object false " "
+// @Param   sort      query    object false " "
+// @Success 200       {object} common.HttpResponse{data=[]entities.User}
+// @Router  /v1/users [get]
 func (s UserService) GetList(c *fiber.Ctx) error {
 	db := database.DB
 

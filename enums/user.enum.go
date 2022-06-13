@@ -1,23 +1,33 @@
 package enums
 
-type _UserRole struct {
+type __UserRole struct {
 	ADMIN string
 	USER  string
 }
 
-var UserRole = _UserRole{
+var _UserRole = __UserRole{
 	ADMIN: "ADMIN",
 	USER:  "USER",
 }
 
-type _UserStatus struct {
+type __UserStatus struct {
 	NOT_ACTIVATED string
 	ACTIVE        string
 	IS_DISABLED   string
 }
 
-var UserStatus = _UserStatus{
+var _UserStatus = __UserStatus{
 	NOT_ACTIVATED: "NOT_ACTIVATED",
 	ACTIVE:        "ACTIVE",
 	IS_DISABLED:   "IS_DISABLED",
+}
+
+type _User struct {
+	Role   __UserRole
+	Status __UserStatus
+}
+
+var User = _User{
+	Role:   _UserRole,
+	Status: _UserStatus,
 }

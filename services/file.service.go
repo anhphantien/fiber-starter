@@ -39,6 +39,13 @@ func (s FileService) Upload(c *fiber.Ctx) error {
 		return errors.RequestEntityTooLargeException(c)
 	}
 
+	stream, _ := file.Open()
+	buffer := make([]byte, file.Size)
+	stream.Read(buffer)
+
+	// f, _ := os.Create(fmt.Sprint("./", file.Filename))
+	// f.Write(buffer)
+
 	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
 
 	return c.JSON(common.HttpResponse{

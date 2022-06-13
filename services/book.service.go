@@ -137,7 +137,7 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 // @Tags    books
 // @Summary Create a new book
 // @Param   body      body     dto.CreateBookBody true " "
-// @Success 200       {object} common.HttpResponse{data=entities.Book}
+// @Success 201       {object} common.HttpResponse{data=entities.Book}
 // @Router  /v1/books [post]
 func (s BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
@@ -173,7 +173,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 // @Summary Update a book
 // @Param   id             path     int true " "
 // @Param   body           body     dto.UpdateBookBody true " "
-// @Success 200            {object} common.HttpResponse{data=entities.Book}
+// @Success 201            {object} common.HttpResponse{data=entities.Book}
 // @Router  /v1/books/{id} [put]
 func (s BookService) Update(c *fiber.Ctx) error {
 	db := database.DB

@@ -4,7 +4,6 @@ import (
 	"fiber-starter/common"
 	"fiber-starter/enums"
 	"fiber-starter/errors"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/exp/slices"
@@ -15,7 +14,7 @@ type FileService struct{}
 // @Tags    file
 // @Summary Upload a file
 // @Param   file            formData file false " "
-// @Success 200             {object} common.HttpResponse{}
+// @Success 201             {object} common.HttpResponse{}
 // @Router  /v1/file/upload [post]
 func (s FileService) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
@@ -40,7 +39,7 @@ func (s FileService) Upload(c *fiber.Ctx) error {
 		return errors.RequestEntityTooLargeException(c)
 	}
 
-	fmt.Println(file.Filename)
+	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,

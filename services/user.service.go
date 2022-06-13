@@ -32,7 +32,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 
 	q := db.
 		Model(users).
-		Joins("Book") // LEFT JOIN
+		Preload("Books", "TRUE ORDER BY book.id DESC")
 
 	ch := make(chan error, 2)
 
@@ -58,7 +58,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
-			Order("user." + pagination.Sort.Field + " " + pagination.Sort.Order). // if use LEFT JOIN/INNER JOIN
+			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&users)
 		if r.Error != nil {
 			ch <- r.Error

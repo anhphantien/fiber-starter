@@ -2,7 +2,7 @@ package services
 
 import (
 	"fiber-starter/common"
-	"fiber-starter/enums"
+	"fiber-starter/config"
 	"fiber-starter/errors"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,13 +29,13 @@ func (s FileService) Upload(c *fiber.Ctx) error {
 
 	if !slices.Contains(
 		[]string{
-			enums.File.ContentType.JPEG,
-			enums.File.ContentType.PNG,
+			config.File.ContentType.JPEG,
+			config.File.ContentType.PNG,
 		}, file.Header["Content-Type"][0]) {
 		return errors.BadRequestException(c, errors.INVALID_FILE_FORMAT)
 	}
 
-	if file.Size > enums.File.MaxSize {
+	if file.Size > config.File.MaxSize {
 		return errors.RequestEntityTooLargeException(c)
 	}
 

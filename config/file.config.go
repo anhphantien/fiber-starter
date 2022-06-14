@@ -1,4 +1,4 @@
-package enums
+package config
 
 type __ContentType struct {
 	JPEG string

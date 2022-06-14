@@ -65,6 +65,8 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data:       models.LoginResponse{AccessToken: token},
+		Data: models.LoginResponse{
+			AccessToken: token,
+		},
 	})
 }

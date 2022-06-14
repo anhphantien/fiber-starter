@@ -35,9 +35,9 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 
 	q := db.
 		Model(books).
-		Joins("User") // LEFT JOIN
-		// Select("`book`.*" + utils.GetAllColumnsOfTable(entities.User{})).
-		// Joins("INNER JOIN user ON book.user_id = user.id")
+		Joins("User") // LEFT JOIN (one-to-one)
+		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
+		// Joins("INNER JOIN user ON book.user_id = user.id") // INNER JOIN (one-to-one)
 	if pagination.Filter["id"] != nil {
 		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
 	}
@@ -55,8 +55,8 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	// }
 
 	// r2 := q.Limit(pagination.Limit).
-	// 	Offset(pagination.Limit * (pagination.Page - 1)).
-	// 	Order("book." + pagination.Sort.Field + " " + pagination.Sort.Order).
+	// 	Offset(pagination.Offset).
+	// 	Order(pagination.Order).
 	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
 	// if r2.Error != nil {
 	// 	return errors.SqlError(c, r2.Error)
@@ -85,9 +85,8 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 		r := q.
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
-			Offset(pagination.Limit * (pagination.Page - 1)).
-			// Order(pagination.Sort.Field + " " + pagination.Sort.Order).
-			Order("book." + pagination.Sort.Field + " " + pagination.Sort.Order). // if use LEFT JOIN/INNER JOIN
+			Offset(pagination.Offset).
+			Order(pagination.Order).
 			Find(&books)
 		if r.Error != nil {
 			ch <- r.Error

@@ -25,42 +25,27 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 	filter := map[string]any{}
 	json.Unmarshal([]byte(c.Query("filter")), &filter)
 
-	sort := dto.Sort{}
+	var sort struct {
+		Field string
+		Order string
+	}
 	json.Unmarshal([]byte(c.Query("sort")), &sort)
 	if len(sort.Field) == 0 {
 		sort.Field = "id"
 	}
 	if !slices.Contains(
 		[]string{
-			Sort.Order.ASC,
-			Sort.Order.DESC,
+			"ASC",
+			"DESC",
 		}, sort.Order) {
-		sort.Order = Sort.Order.DESC
+		sort.Order = "DESC"
 	}
 
 	return dto.Pagination{
 		Limit:   limit,
-		Page:    page,
+		Offset:  limit * (page - 1),
 		Keyword: keyword,
 		Filter:  filter,
-		Sort:    sort,
+		Order:   sort.Field + " " + sort.Order,
 	}
-}
-
-type __Order struct {
-	ASC  string
-	DESC string
-}
-
-var _Order = __Order{
-	ASC:  "ASC",
-	DESC: "DESC",
-}
-
-type _Sort struct {
-	Order __Order
-}
-
-var Sort = _Sort{
-	Order: _Order,
 }

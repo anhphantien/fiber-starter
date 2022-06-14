@@ -33,7 +33,7 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 
 	user := entities.User{}
 	r := db.
-		Model(&user).
+		Model(user).
 		Where("username = ?", body.Username).
 		First(&user)
 	if r.Error != nil {

@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"fiber-starter/dto"
-	"fiber-starter/enums"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -33,10 +32,10 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 	}
 	if !slices.Contains(
 		[]string{
-			enums.Sort.Order.ASC,
-			enums.Sort.Order.DESC,
+			Sort.Order.ASC,
+			Sort.Order.DESC,
 		}, sort.Order) {
-		sort.Order = enums.Sort.Order.DESC
+		sort.Order = Sort.Order.DESC
 	}
 
 	return dto.Pagination{
@@ -46,4 +45,22 @@ func Pagination(c *fiber.Ctx) dto.Pagination {
 		Filter:  filter,
 		Sort:    sort,
 	}
+}
+
+type __Order struct {
+	ASC  string
+	DESC string
+}
+
+var _Order = __Order{
+	ASC:  "ASC",
+	DESC: "DESC",
+}
+
+type _Sort struct {
+	Order __Order
+}
+
+var Sort = _Sort{
+	Order: _Order,
 }

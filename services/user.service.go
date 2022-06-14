@@ -58,7 +58,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Limit * (pagination.Page - 1)).
-			Order(pagination.Sort.Field + " " + pagination.Sort.Order).
+			Order("user." + pagination.Sort.Field + " " + pagination.Sort.Order).
 			Find(&users)
 		if r.Error != nil {
 			ch <- r.Error

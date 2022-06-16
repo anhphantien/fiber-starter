@@ -2,12 +2,11 @@ package services
 
 import (
 	"fiber-starter/common"
-	"fiber-starter/database"
 	"fiber-starter/dto"
-	"fiber-starter/entities"
 	"fiber-starter/env"
 	"fiber-starter/errors"
 	"fiber-starter/models"
+	"fiber-starter/repositories"
 	"fiber-starter/utils"
 	"time"
 
@@ -24,20 +23,14 @@ type AuthService struct{}
 // @Success 200            {object}   common.HttpResponse{data=models.LoginResponse}
 // @Router  /v1/auth/login [post]
 func (s AuthService) Login(c *fiber.Ctx) error {
-	db := database.DB
-
 	body := dto.LoginBody{}
 	if err, ok := utils.Validate(c, &body); !ok {
 		return err
 	}
 
-	user := entities.User{}
-	r := db.
-		Model(user).
-		Where("username = ?", body.Username).
-		First(&user)
-	if r.Error != nil {
-		return errors.SqlError(c, r.Error)
+	user, err := repositories.UserRepository{}.FindByUsername(body.Username)
+	if err != nil {
+		return errors.SqlError(c, err)
 	}
 	if err := bcrypt.
 		CompareHashAndPassword(

@@ -21,7 +21,7 @@ func Connect() (err error) {
 		dbname   = env.DB_NAME
 	)
 
-	dsn := fmt.Sprint(user, password, ":@tcp(", host, ":", port, ")/", dbname, "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true")
+	dsn := fmt.Sprint(user, ":", password, "@tcp(", host, ":", port, ")/", dbname, "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true")
 	fmt.Println(dsn)
 
 	DB, err = gorm.Open(mysql.Open(dsn))

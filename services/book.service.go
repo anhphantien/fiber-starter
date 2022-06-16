@@ -122,7 +122,7 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 	book := entities.Book{}
 	id := utils.ConvertToInt(c.Params("id"))
 
-	r := db.Model(book).Where("id = ?", id).First(&book)
+	r := db.Model(book).Where("id = ?", id).Take(&book)
 	if r.Error != nil {
 		return errors.SqlError(c, r.Error)
 	}
@@ -148,7 +148,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 
 	if body.UserID != nil {
 		user := entities.User{}
-		r := db.Model(user).Where("id = ?", body.UserID).First(&user)
+		r := db.Model(user).Where("id = ?", body.UserID).Take(&user)
 		if r.Error != nil {
 			return errors.SqlError(c, r.Error)
 		}
@@ -186,8 +186,8 @@ func (s BookService) Update(c *fiber.Ctx) error {
 	id := utils.ConvertToInt(c.Params("id"))
 
 	// q := db.Model(book).Session(&gorm.Session{})
-	// r1 := q.Where("id = ?", id).First(&book)
-	r1 := db.Model(book).Where("id = ?", id).First(&book)
+	// r1 := q.Where("id = ?", id).Take(&book)
+	r1 := db.Model(book).Where("id = ?", id).Take(&book)
 	if r1.Error != nil {
 		return errors.SqlError(c, r1.Error)
 	}
@@ -222,7 +222,7 @@ func (s BookService) Delete(c *fiber.Ctx) error {
 	book := entities.Book{}
 	id := utils.ConvertToInt(c.Params("id"))
 
-	r1 := db.Model(book).Where("id = ?", id).First(&book)
+	r1 := db.Model(book).Where("id = ?", id).Take(&book)
 	if r1.Error != nil {
 		return errors.SqlError(c, r1.Error)
 	}

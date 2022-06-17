@@ -5,7 +5,9 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
-	"unicode"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Model interface {
@@ -26,7 +28,7 @@ func GetAllColumnsOfTable(model Model) string {
 		if len(column) > 0 {
 			s = append(s, fmt.Sprintf("%v AS %v",
 				model.TableName()+"."+column,
-				makeFirstLetterUppercase(model.TableName())+"__"+column,
+				cases.Title(language.Und).String(model.TableName())+"__"+column,
 			))
 		}
 	}
@@ -35,11 +37,4 @@ func GetAllColumnsOfTable(model Model) string {
 		return ""
 	}
 	return ", " + strings.Join(s[:], ", ")
-}
-
-func makeFirstLetterUppercase(str string) string {
-	for i, v := range str {
-		return string(unicode.ToUpper(v)) + str[i+1:]
-	}
-	return ""
 }

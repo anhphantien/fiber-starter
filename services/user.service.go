@@ -5,6 +5,7 @@ import (
 	"fiber-starter/database"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
+	"fiber-starter/models"
 	"fiber-starter/utils"
 	"sync"
 
@@ -76,7 +77,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data: common.PaginationResponse{
+		Data: models.PaginationResponse{
 			Items: users,
 			Total: total,
 		},

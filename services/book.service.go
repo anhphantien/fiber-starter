@@ -7,6 +7,7 @@ import (
 	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
+	"fiber-starter/models"
 	"fiber-starter/utils"
 	"sync"
 
@@ -104,7 +105,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Data: common.PaginationResponse{
+		Data: models.PaginationResponse{
 			Items: books,
 			Total: total,
 		},

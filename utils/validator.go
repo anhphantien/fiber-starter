@@ -3,7 +3,7 @@ package utils
 import (
 	"fiber-starter/common"
 	"fiber-starter/errors"
-	"unicode"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +14,7 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-func Validate(c *fiber.Ctx, payload any) (error, bool) {
+func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
 	validate := validator.New()
 
 	if err := c.BodyParser(payload); err != nil {
@@ -27,7 +27,7 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 
 		for i, fieldError := range validationErrors {
 			errors[i] = Error{
-				Field:   makeFirstLetterLowercase(fieldError.Field()),
+				Field:   strings.ToLower(fieldError.Field()),
 				Message: message(fieldError),
 			}
 		}
@@ -39,13 +39,6 @@ func Validate(c *fiber.Ctx, payload any) (error, bool) {
 	}
 
 	return nil, true
-}
-
-func makeFirstLetterLowercase(str string) string {
-	for i, v := range str {
-		return string(unicode.ToLower(v)) + str[i+1:]
-	}
-	return ""
 }
 
 func message(fieldError validator.FieldError) string {

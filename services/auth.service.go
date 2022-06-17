@@ -24,7 +24,7 @@ type AuthService struct{}
 // @Router  /v1/auth/login [post]
 func (s AuthService) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}
-	if err, ok := utils.Validate(c, &body); !ok {
+	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
 	}
 

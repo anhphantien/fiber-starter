@@ -142,7 +142,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 	db := database.DB
 
 	body := dto.CreateBookBody{}
-	if err, ok := utils.Validate(c, &body); !ok {
+	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
 	}
 
@@ -178,7 +178,7 @@ func (s BookService) Update(c *fiber.Ctx) error {
 	db := database.DB
 
 	body := dto.UpdateBookBody{}
-	if err, ok := utils.Validate(c, &body); !ok {
+	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
 	}
 

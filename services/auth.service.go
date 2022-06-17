@@ -45,16 +45,16 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 		}
 	}
 
-	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, models.JwtClaims{
-		ID:       user.ID,
-		Username: *user.Username,
-		Role:     *user.Role,
-		RegisteredClaims: jwt.RegisteredClaims{
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		common.CurrentUser{
+			ID:       user.ID,
+			Username: *user.Username,
+			Role:     *user.Role,
 			IssuedAt: jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().
 				Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second)),
 		},
-	}).SignedString(env.JWT_SECRET)
+	).SignedString(env.JWT_SECRET)
 
 	return c.JSON(common.HttpResponse{
 		StatusCode: fiber.StatusOK,

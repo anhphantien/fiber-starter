@@ -7,9 +7,7 @@ import (
 	"net/http"
 )
 
-type HttpService struct{}
-
-func (s HttpService) Get() (map[string]any, error) {
+func HttpGet() (map[string]any, error) {
 	// buffer, _ := json.Marshal(map[string]any{
 	// 	"username": "superadmin",
 	// 	"password": "123456",

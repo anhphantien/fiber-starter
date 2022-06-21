@@ -38,11 +38,11 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
 		// Joins("INNER JOIN user ON book.user_id = user.id") // INNER JOIN (one-to-one)
 	if pagination.Filter["id"] != nil {
-		q.Where("id = ?", utils.ConvertToInt(pagination.Filter["id"]))
+		q.Where("book.id = ?", utils.ConvertToInt(pagination.Filter["id"]))
 	}
 	if len(pagination.Keyword) > 0 {
 		q.Where(
-			"title LIKE @keyword OR description LIKE @keyword",
+			"book.title LIKE @keyword OR book.description LIKE @keyword",
 			sql.Named("keyword", "%"+pagination.Keyword+"%"),
 		)
 	}
@@ -201,7 +201,7 @@ func (s BookService) Update(c *fiber.Ctx) error {
 // @Success  200            {object} common.Response{}
 // @Router   /v1/books/{id} [delete]
 func (s BookService) Delete(c *fiber.Ctx) error {
-	// user, err, ok := utils.CurrentUser(c)
+	// user, err, ok := utils.GetCurrentUser(c)
 	// if !ok {
 	// 	return err
 	// }

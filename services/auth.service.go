@@ -46,7 +46,7 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 	}
 
 	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		common.CurrentUser{
+		models.CurrentUser{
 			ID:       user.ID,
 			Username: *user.Username,
 			Role:     *user.Role,

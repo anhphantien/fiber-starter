@@ -1,8 +1,8 @@
 package database
 
 import (
-	"fiber-starter/entities"
 	"fiber-starter/env"
+	"fiber-starter/repositories"
 	"fmt"
 
 	"gorm.io/driver/mysql"
@@ -24,7 +24,7 @@ func Connect() error {
 	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true"
 	fmt.Println(dsn)
 
-	DB, err := gorm.Open(
+	db, err := gorm.Open(
 		mysql.Open(dsn),
 		&gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
@@ -34,7 +34,7 @@ func Connect() error {
 		return err
 	}
 
-	DB.AutoMigrate(&entities.Book{}, &entities.User{})
+	repositories.Init(db)
 
 	return nil
 }

@@ -3,6 +3,7 @@ package services
 import (
 	"fiber-starter/common"
 	"fiber-starter/dto"
+	"fiber-starter/entities"
 	"fiber-starter/env"
 	"fiber-starter/errors"
 	"fiber-starter/models"
@@ -28,9 +29,12 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	user, err := repositories.UserRepository{}.FindByUsername(body.Username)
-	if err != nil {
-		return errors.SqlError(c, err)
+	user := entities.User{}
+	r := repositories.UserRepository.
+		Where("username = ?", body.Username).
+		Take(&user)
+	if r.Error != nil {
+		return errors.SqlError(c, r.Error)
 	}
 	if err := bcrypt.
 		CompareHashAndPassword(

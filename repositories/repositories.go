@@ -1,15 +1,12 @@
 package repositories
 
 import (
-	"fiber-starter/database"
-
 	"gorm.io/gorm"
 )
 
-func GetDB() *gorm.DB {
-	return database.DB
-}
+type Repository struct{}
 
-func GetRepository(model any) *gorm.DB {
-	return database.DB.Model(model)
+func Init(db *gorm.DB) {
+	_BookRepository(db)
+	_UserRepository(db)
 }

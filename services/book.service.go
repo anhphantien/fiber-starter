@@ -33,7 +33,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	pagination := utils.Pagination(c)
 
 	q := repositories.
-		GetRepository(books).
+		BookRepository.
 		Joins("User") // LEFT JOIN (one-to-one)
 		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
 		// Joins("INNER JOIN user ON book.user_id = user.id") // INNER JOIN (one-to-one)
@@ -53,7 +53,8 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	// 	return errors.SqlError(c, r1.Error)
 	// }
 
-	// r2 := q.Limit(pagination.Limit).
+	// r2 := q.
+	// 	Limit(pagination.Limit).
 	// 	Offset(pagination.Offset).
 	// 	Order(pagination.Order).
 	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
@@ -118,7 +119,9 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 	book := entities.Book{}
 	id := utils.ConvertToInt(c.Params("id"))
 
-	r := repositories.GetRepository(book).Where("id = ?", id).Take(&book)
+	r := repositories.BookRepository.
+		Where("id = ?", id).
+		Take(&book)
 	if r.Error != nil {
 		return errors.SqlError(c, r.Error)
 	}
@@ -141,7 +144,9 @@ func (s BookService) Create(c *fiber.Ctx) error {
 
 	if body.UserID != nil {
 		user := entities.User{}
-		r := repositories.GetRepository(user).Where("id = ?", body.UserID).Take(&user)
+		r := repositories.BookRepository.
+			Where("id = ?", body.UserID).
+			Take(&user)
 		if r.Error != nil {
 			return errors.SqlError(c, r.Error)
 		}
@@ -150,7 +155,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 	copier.Copy(&book, &body)
 
-	r := repositories.GetDB().Create(&book)
+	r := repositories.BookRepository.Create(&book)
 	if r.Error != nil {
 		return errors.SqlError(c, r.Error)
 	}
@@ -177,14 +182,16 @@ func (s BookService) Update(c *fiber.Ctx) error {
 
 	// q := db.Model(book).Session(&gorm.Session{})
 	// r1 := q.Where("id = ?", id).Take(&book)
-	r1 := repositories.GetRepository(book).Where("id = ?", id).Take(&book)
+	r1 := repositories.BookRepository.
+		Where("id = ?", id).
+		Take(&book)
 	if r1.Error != nil {
 		return errors.SqlError(c, r1.Error)
 	}
 
 	copier.CopyWithOption(&book, &body, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	// r2 := q.Where("id = ?", id).Updates(&book)
-	r2 := repositories.GetDB().Updates(&book)
+	r2 := repositories.BookRepository.Updates(&book)
 	if r2.Error != nil {
 		return errors.SqlError(c, r2.Error)
 	}
@@ -209,12 +216,14 @@ func (s BookService) Delete(c *fiber.Ctx) error {
 	book := entities.Book{}
 	id := utils.ConvertToInt(c.Params("id"))
 
-	r1 := repositories.GetRepository(book).Where("id = ?", id).Take(&book)
+	r1 := repositories.BookRepository.
+		Where("id = ?", id).
+		Take(&book)
 	if r1.Error != nil {
 		return errors.SqlError(c, r1.Error)
 	}
 
-	r2 := repositories.GetDB().Delete(&book)
+	r2 := repositories.BookRepository.Delete(&book)
 	if r2.Error != nil {
 		return errors.SqlError(c, r2.Error)
 	}

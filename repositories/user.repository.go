@@ -1,23 +1,14 @@
 package repositories
 
 import (
-	"fiber-starter/database"
 	"fiber-starter/entities"
+
+	"gorm.io/gorm"
 )
 
-type UserRepository struct{}
+var UserRepository *gorm.DB
 
-func (r UserRepository) FindByUsername(username string) (entities.User, error) {
-	user := entities.User{}
-
-	err := database.DB.
-		Model(user).
-		Where("username = ?", username).
-		First(&user).
-		Error
-	if err != nil {
-		return user, err
-	}
-
-	return user, nil
+func _UserRepository(db *gorm.DB) {
+	db.AutoMigrate(entities.User{})
+	UserRepository = db.Model(entities.User{})
 }

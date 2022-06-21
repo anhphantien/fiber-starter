@@ -14,14 +14,14 @@ var DB *gorm.DB
 
 func Connect() (err error) {
 	var (
-		user     = env.DB_USER
+		username = env.DB_USER
 		password = env.DB_PASS
 		host     = env.DB_HOST
 		port     = env.DB_PORT
 		dbname   = env.DB_NAME
 	)
 
-	dsn := fmt.Sprint(user, ":", password, "@tcp(", host, ":", port, ")/", dbname, "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true")
+	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true"
 	fmt.Println(dsn)
 
 	DB, err = gorm.Open(mysql.Open(dsn))

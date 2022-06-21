@@ -157,7 +157,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 		return errors.SqlError(c, r.Error)
 	}
 
-	return c.JSON(common.HttpResponse{
+	return c.Status(fiber.StatusCreated).JSON(common.HttpResponse{
 		StatusCode: fiber.StatusCreated,
 		Data:       book,
 	})

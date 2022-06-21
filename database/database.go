@@ -12,7 +12,7 @@ import (
 
 var DB *gorm.DB
 
-func Connect() (err error) {
+func Connect() error {
 	var (
 		username = env.DB_USER
 		password = env.DB_PASS
@@ -24,14 +24,17 @@ func Connect() (err error) {
 	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true"
 	fmt.Println(dsn)
 
-	DB, err = gorm.Open(mysql.Open(dsn))
+	DB, err := gorm.Open(
+		mysql.Open(dsn),
+		&gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+		},
+	)
 	if err != nil {
 		return err
 	}
 
-	DB.Logger = logger.Default.LogMode(logger.Info)
-
 	DB.AutoMigrate(&entities.Book{}, &entities.User{})
 
-	return
+	return nil
 }

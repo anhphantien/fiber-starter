@@ -8,7 +8,8 @@ import (
 
 var UserRepository *gorm.DB
 
-func _UserRepository(db *gorm.DB) {
-	db.AutoMigrate(entities.User{})
-	UserRepository = db.Model(entities.User{})
+func (r Repository) UserRepository(db *gorm.DB) {
+	user := entities.User{}
+	db.AutoMigrate(user)
+	UserRepository = db.Model(user)
 }

@@ -8,7 +8,8 @@ import (
 
 var BookRepository *gorm.DB
 
-func _BookRepository(db *gorm.DB) {
-	db.AutoMigrate(entities.Book{})
-	BookRepository = db.Model(entities.Book{})
+func (r Repository) BookRepository(db *gorm.DB) {
+	book := entities.Book{}
+	db.AutoMigrate(book)
+	BookRepository = db.Model(book)
 }

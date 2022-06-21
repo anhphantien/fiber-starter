@@ -51,7 +51,7 @@ func NotFoundException(c *fiber.Ctx, message ...string) error {
 		})
 	}
 	return common.HttpResponse(c, common.Response{
-		StatusCode: fiber.StatusInternalServerError,
+		StatusCode: fiber.StatusNotFound,
 		Message:    message[0],
 	})
 }

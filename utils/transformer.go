@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -9,8 +8,7 @@ import (
 func ConvertToInt(v any) int {
 	switch reflect.TypeOf(v).Kind() {
 	case reflect.Float64:
-		n, _ := strconv.Atoi(fmt.Sprintf("%.0f", v))
-		return n
+		return int(v.(float64))
 	default:
 		n, _ := strconv.Atoi(v.(string))
 		return n

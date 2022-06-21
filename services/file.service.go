@@ -6,6 +6,7 @@ import (
 	"fiber-starter/errors"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/valyala/fasthttp"
 	"golang.org/x/exp/slices"
 )
 
@@ -14,13 +15,13 @@ type FileService struct{}
 // @Tags    file
 // @Summary Upload a file
 // @Param   file            formData file false " "
-// @Success 201             {object} common.HttpResponse{}
+// @Success 201             {object} common.Response{}
 // @Router  /v1/file/upload [post]
 func (s FileService) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
 	if err != nil {
-		switch err.Error() {
-		case "request has no multipart/form-data Content-Type":
+		switch err {
+		case fasthttp.ErrNoMultipartForm:
 			return errors.BadRequestException(c, errors.FILE_NOT_FOUND)
 		default:
 			return errors.BadRequestException(c, err.Error())
@@ -48,7 +49,5 @@ func (s FileService) Upload(c *fiber.Ctx) error {
 
 	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusCreated,
-	})
+	return common.HttpResponse(c, common.Response{})
 }

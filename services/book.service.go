@@ -25,7 +25,7 @@ type BookService struct{}
 // @Param   keyword   query    string false " "
 // @Param   filter    query    object false " "
 // @Param   sort      query    object false " "
-// @Success 200       {object} common.HttpResponse{data=[]entities.Book}
+// @Success 200       {object} common.Response{data=[]entities.Book}
 // @Router  /v1/books [get]
 func (s BookService) GetList(c *fiber.Ctx) error {
 	books := []entities.Book{}
@@ -101,8 +101,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusOK,
+	return common.HttpResponse(c, common.Response{
 		Data: models.PaginationResponse{
 			Items: books,
 			Total: total,
@@ -113,7 +112,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 // @Tags    books
 // @Summary Get a book by ID
 // @Param   id             path     int true " "
-// @Success 200            {object} common.HttpResponse{data=entities.Book}
+// @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [get]
 func (s BookService) GetByID(c *fiber.Ctx) error {
 	book := entities.Book{}
@@ -124,16 +123,15 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 		return errors.SqlError(c, r.Error)
 	}
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusOK,
-		Data:       book,
+	return common.HttpResponse(c, common.Response{
+		Data: book,
 	})
 }
 
 // @Tags    books
 // @Summary Create a new book
 // @Param   body      body     dto.CreateBookBody true " "
-// @Success 201       {object} common.HttpResponse{data=entities.Book}
+// @Success 201       {object} common.Response{data=entities.Book}
 // @Router  /v1/books [post]
 func (s BookService) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
@@ -157,9 +155,8 @@ func (s BookService) Create(c *fiber.Ctx) error {
 		return errors.SqlError(c, r.Error)
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(common.HttpResponse{
-		StatusCode: fiber.StatusCreated,
-		Data:       book,
+	return common.HttpResponse(c, common.Response{
+		Data: book,
 	})
 }
 
@@ -167,7 +164,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 // @Summary Update a book
 // @Param   id             path     int true " "
 // @Param   body           body     dto.UpdateBookBody true " "
-// @Success 201            {object} common.HttpResponse{data=entities.Book}
+// @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [put]
 func (s BookService) Update(c *fiber.Ctx) error {
 	body := dto.UpdateBookBody{}
@@ -192,9 +189,8 @@ func (s BookService) Update(c *fiber.Ctx) error {
 		return errors.SqlError(c, r2.Error)
 	}
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusCreated,
-		Data:       book,
+	return common.HttpResponse(c, common.Response{
+		Data: book,
 	})
 }
 
@@ -202,7 +198,7 @@ func (s BookService) Update(c *fiber.Ctx) error {
 // @Summary  Delete a book
 // @Tags     books
 // @Param    id             path     int true " "
-// @Success  200            {object} common.HttpResponse{}
+// @Success  200            {object} common.Response{}
 // @Router   /v1/books/{id} [delete]
 func (s BookService) Delete(c *fiber.Ctx) error {
 	// user, err, ok := utils.CurrentUser(c)
@@ -223,7 +219,5 @@ func (s BookService) Delete(c *fiber.Ctx) error {
 		return errors.SqlError(c, r2.Error)
 	}
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusOK,
-	})
+	return common.HttpResponse(c, common.Response{})
 }

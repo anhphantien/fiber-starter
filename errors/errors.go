@@ -17,14 +17,14 @@ const (
 )
 
 func BadRequestException(c *fiber.Ctx, message string) error {
-	return c.Status(fiber.StatusBadRequest).JSON(common.HttpResponse{
+	return common.HttpResponse(c, common.Response{
 		StatusCode: fiber.StatusBadRequest,
 		Message:    message,
 	})
 }
 
 func UnauthorizedException(c *fiber.Ctx, message string) error {
-	return c.Status(fiber.StatusUnauthorized).JSON(common.HttpResponse{
+	return common.HttpResponse(c, common.Response{
 		StatusCode: fiber.StatusUnauthorized,
 		Message:    message,
 	})
@@ -32,12 +32,12 @@ func UnauthorizedException(c *fiber.Ctx, message string) error {
 
 func ForbiddenException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
+		return common.HttpResponse(c, common.Response{
 			StatusCode: fiber.StatusForbidden,
 			Message:    PERMISSION_DENIED,
 		})
 	}
-	return c.Status(fiber.StatusForbidden).JSON(common.HttpResponse{
+	return common.HttpResponse(c, common.Response{
 		StatusCode: fiber.StatusForbidden,
 		Message:    message[0],
 	})
@@ -45,32 +45,32 @@ func ForbiddenException(c *fiber.Ctx, message ...string) error {
 
 func NotFoundException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
+		return common.HttpResponse(c, common.Response{
 			StatusCode: fiber.StatusNotFound,
 			Message:    DATA_NOT_FOUND,
 		})
 	}
-	return c.Status(fiber.StatusNotFound).JSON(common.HttpResponse{
-		StatusCode: fiber.StatusNotFound,
+	return common.HttpResponse(c, common.Response{
+		StatusCode: fiber.StatusInternalServerError,
 		Message:    message[0],
 	})
 }
 
 func RequestEntityTooLargeException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return c.Status(fiber.StatusRequestEntityTooLarge).JSON(common.HttpResponse{
+		return common.HttpResponse(c, common.Response{
 			StatusCode: fiber.StatusRequestEntityTooLarge,
 			Message:    PAYLOAD_TOO_LARGE,
 		})
 	}
-	return c.Status(fiber.StatusRequestEntityTooLarge).JSON(common.HttpResponse{
+	return common.HttpResponse(c, common.Response{
 		StatusCode: fiber.StatusRequestEntityTooLarge,
 		Message:    message[0],
 	})
 }
 
 func InternalServerErrorException(c *fiber.Ctx, message string) error {
-	return c.Status(fiber.StatusInternalServerError).JSON(common.HttpResponse{
+	return common.HttpResponse(c, common.Response{
 		StatusCode: fiber.StatusInternalServerError,
 		Message:    message,
 	})
@@ -79,7 +79,7 @@ func InternalServerErrorException(c *fiber.Ctx, message string) error {
 func SqlError(c *fiber.Ctx, err error) error {
 	switch err {
 	case gorm.ErrRecordNotFound:
-		return NotFoundException(c)
+		return NotFoundException(c, err.Error())
 	default:
 		return InternalServerErrorException(c, err.Error())
 	}

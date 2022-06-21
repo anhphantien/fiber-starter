@@ -22,7 +22,7 @@ type UserService struct{}
 // @Param   keyword   query    string false " "
 // @Param   filter    query    object false " "
 // @Param   sort      query    object false " "
-// @Success 200       {object} common.HttpResponse{data=[]entities.User}
+// @Success 200       {object} common.Response{data=[]entities.User}
 // @Router  /v1/users [get]
 func (s UserService) GetList(c *fiber.Ctx) error {
 	db := database.DB
@@ -75,8 +75,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusOK,
+	return common.HttpResponse(c, common.Response{
 		Data: models.PaginationResponse{
 			Items: users,
 			Total: total,

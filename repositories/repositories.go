@@ -10,6 +10,6 @@ func GetDB() *gorm.DB {
 	return database.DB
 }
 
-func GetRepository(model interface{}) *gorm.DB {
+func GetRepository(model any) *gorm.DB {
 	return database.DB.Model(model)
 }

@@ -20,7 +20,7 @@ type AuthService struct{}
 // @Tags    auth
 // @Summary Login
 // @Param   body           body       dto.LoginBody true " "
-// @Success 200            {object}   common.HttpResponse{data=models.LoginResponse}
+// @Success 201            {object}   common.Response{data=models.LoginResponse}
 // @Router  /v1/auth/login [post]
 func (s AuthService) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}
@@ -56,10 +56,9 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 		},
 	).SignedString(env.JWT_SECRET)
 
-	return c.JSON(common.HttpResponse{
-		StatusCode: fiber.StatusOK,
+	return common.HttpResponse(c, (common.Response{
 		Data: models.LoginResponse{
 			AccessToken: token,
 		},
-	})
+	}))
 }

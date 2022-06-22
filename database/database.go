@@ -34,7 +34,7 @@ func Connect() error {
 		return err
 	}
 
-	repositories.Init(db)
+	repositories.New(db)
 
 	return nil
 }

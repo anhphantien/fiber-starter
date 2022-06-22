@@ -6,7 +6,7 @@ import (
 
 type Repository struct{}
 
-func Init(db *gorm.DB) {
+func New(db *gorm.DB) {
 	r := Repository{}
 	r.BookRepository(db)
 	r.UserRepository(db)

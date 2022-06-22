@@ -145,10 +145,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 		}
 	}
 
-	book := entities.Book{}
-	copier.Copy(&book, &body)
-
-	err := repositories.BookRepository{}.Create(book)
+	book, err := repositories.BookRepository{}.Create(body)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}

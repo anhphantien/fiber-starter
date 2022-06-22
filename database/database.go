@@ -10,8 +10,6 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var DB *gorm.DB
-
 func Connect() error {
 	var (
 		username = env.DB_USER
@@ -34,7 +32,7 @@ func Connect() error {
 		return err
 	}
 
-	repositories.New(db)
+	repositories.Sync(db)
 
 	return nil
 }

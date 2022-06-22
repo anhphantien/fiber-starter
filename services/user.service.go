@@ -2,10 +2,10 @@ package services
 
 import (
 	"fiber-starter/common"
-	"fiber-starter/database"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/models"
+	"fiber-starter/repositories"
 	"fiber-starter/utils"
 	"sync"
 
@@ -25,14 +25,11 @@ type UserService struct{}
 // @Success 200       {object} common.Response{data=[]entities.User}
 // @Router  /v1/users [get]
 func (s UserService) GetList(c *fiber.Ctx) error {
-	db := database.DB
-
 	users := []entities.User{}
 
 	pagination := utils.Pagination(c)
 
-	q := db.
-		Model(users).
+	q := repositories.CreateSqlBuilder(users).
 		Preload("Books", "TRUE ORDER BY book.id DESC") // LEFT JOIN (one-to-many)
 
 	ch := make(chan error, 2)

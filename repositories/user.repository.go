@@ -2,14 +2,14 @@ package repositories
 
 import (
 	"fiber-starter/entities"
-
-	"gorm.io/gorm"
+	"fiber-starter/utils"
 )
 
-var UserRepository *gorm.DB
+type UserRepository struct{}
 
-func (r Repository) UserRepository(db *gorm.DB) {
-	user := entities.User{}
-	db.AutoMigrate(user)
-	UserRepository = db.Model(user)
+func (r UserRepository) FindOneByID(id any) (user entities.User, err error) {
+	err = CreateSqlBuilder(user).
+		Where("id = ?", utils.ConvertToInt(id)).
+		Take(&user).Error
+	return user, err
 }

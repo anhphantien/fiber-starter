@@ -30,7 +30,8 @@ func (s AuthService) Login(c *fiber.Ctx) error {
 	}
 
 	user := entities.User{}
-	r := repositories.UserRepository.
+	r := repositories.
+		CreateSqlBuilder(user).
 		Where("username = ?", body.Username).
 		Take(&user)
 	if r.Error != nil {

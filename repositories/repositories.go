@@ -1,13 +1,21 @@
 package repositories
 
 import (
+	"fiber-starter/entities"
+
 	"gorm.io/gorm"
 )
 
-type Repository struct{}
+var DB *gorm.DB
 
-func New(db *gorm.DB) {
-	r := Repository{}
-	r.BookRepository(db)
-	r.UserRepository(db)
+func Sync(db *gorm.DB) {
+	db.AutoMigrate(
+		entities.Book{},
+		entities.User{},
+	)
+	DB = db
+}
+
+func CreateSqlBuilder(model any) *gorm.DB {
+	return DB.Model(model)
 }

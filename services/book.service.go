@@ -37,7 +37,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
 		// Joins("INNER JOIN user ON book.user_id = user.id") // INNER JOIN (one-to-one)
 	if pagination.Filter["id"] != nil {
-		q.Where("book.id = ?", utils.ConvertToInt(pagination.Filter["id"]))
+		q.Where("book.id = ?", utils.ConvertToID(pagination.Filter["id"]))
 	}
 	if len(pagination.Keyword) > 0 {
 		q.Where(
@@ -56,7 +56,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	// 	Limit(pagination.Limit).
 	// 	Offset(pagination.Offset).
 	// 	Order(pagination.Order).
-	// 	Find(&books) // db.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
+	// 	Find(&books) // repositories.DB.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
 	// if r2.Error != nil {
 	// 	return errors.SqlError(c, r2.Error)
 	// }
@@ -168,7 +168,7 @@ func (s BookService) Update(c *fiber.Ctx) error {
 	}
 
 	book := entities.Book{}
-	id := utils.ConvertToInt(c.Params("id"))
+	id := utils.ConvertToID(c.Params("id"))
 
 	// q := db.Model(book).Session(&gorm.Session{})
 	// r1 := q.Where("id = ?", id).Take(&book)
@@ -204,7 +204,7 @@ func (s BookService) Delete(c *fiber.Ctx) error {
 	// }
 
 	book := entities.Book{}
-	id := utils.ConvertToInt(c.Params("id"))
+	id := utils.ConvertToID(c.Params("id"))
 
 	r1 := repositories.CreateSqlBuilder(book).
 		Where("id = ?", id).

@@ -10,15 +10,15 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func Connect() error {
-	var (
-		username = env.DB_USER
-		password = env.DB_PASS
-		host     = env.DB_HOST
-		port     = env.DB_PORT
-		dbname   = env.DB_NAME
-	)
+var (
+	username = env.DB_USER
+	password = env.DB_PASS
+	host     = env.DB_HOST
+	port     = env.DB_PORT
+	dbname   = env.DB_NAME
+)
 
+func Connect() (err error) {
 	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true"
 	fmt.Println(dsn)
 
@@ -33,6 +33,5 @@ func Connect() error {
 	}
 
 	repositories.Sync(db)
-
-	return nil
+	return
 }

@@ -148,9 +148,9 @@ func (s BookService) Create(c *fiber.Ctx) error {
 	book := entities.Book{}
 	copier.Copy(&book, &body)
 
-	r := repositories.CreateSqlBuilder(book).Create(&book)
-	if r.Error != nil {
-		return errors.SqlError(c, r.Error)
+	err := repositories.BookRepository{}.Create(book)
+	if err != nil {
+		return errors.SqlError(c, err)
 	}
 
 	return common.HttpResponse(c, common.Response{

@@ -13,3 +13,8 @@ func (r BookRepository) FindOneByID(id any) (book entities.Book, err error) {
 		Take(&book).Error
 	return book, err
 }
+
+func (r BookRepository) Create(book entities.Book) (err error) {
+	err = DB.Create(book).Error
+	return err
+}

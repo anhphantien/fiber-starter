@@ -12,6 +12,8 @@ type Response struct {
 func HttpResponse(c *fiber.Ctx, response Response) error {
 	if response.StatusCode == 0 && c.Route().Method == fiber.MethodPost {
 		response.StatusCode = fiber.StatusCreated
+	} else {
+		response.StatusCode = fiber.StatusOK
 	}
 	return c.Status(response.StatusCode).JSON(response)
 }

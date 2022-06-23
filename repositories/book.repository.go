@@ -16,8 +16,17 @@ func (r BookRepository) FindOneByID(id any) (book entities.Book, err error) {
 	return book, err
 }
 
-func (r BookRepository) Create(body any) (book entities.Book, err error) {
-	copier.Copy(&book, body)
-	err = DB.Create(&book).Error
+func (r BookRepository) Create(data any) (book entities.Book, err error) {
+	copier.Copy(&book, data)
+	err = CreateSqlBuilder(book).Create(&book).Error
+	return book, err
+}
+
+func (r BookRepository) Update(id, data any) (book entities.Book, err error) {
+	book, err = BookRepository{}.FindOneByID(id)
+	if err != nil {
+		return book, err
+	}
+	err = CreateSqlBuilder(book).Updates(data).Error
 	return book, err
 }

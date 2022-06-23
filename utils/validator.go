@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"encoding/json"
 	"fiber-starter/common"
 	"fiber-starter/errors"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/samber/lo"
+	"golang.org/x/exp/maps"
 )
 
 type Error struct {
@@ -14,11 +17,11 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
+func ValidateRequestBody(c *fiber.Ctx, payload any) (map[string]any, error, bool) {
 	validate := validator.New()
 
 	if err := c.BodyParser(payload); err != nil {
-		return errors.BadRequestException(c, err.Error()), false
+		return nil, errors.BadRequestException(c, err.Error()), false
 	}
 
 	if err := validate.Struct(payload); err != nil {
@@ -32,13 +35,22 @@ func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
 			}
 		}
 
-		return common.HttpResponse(c, common.Response{
+		return nil, common.HttpResponse(c, common.Response{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      errors,
 		}), false
 	}
 
-	return nil, true
+	dto := map[string]any{}
+	_payload, _ := json.Marshal(payload)
+	json.Unmarshal(_payload, &dto)
+
+	body := map[string]any{}
+	json.Unmarshal(c.Body(), &body)
+
+	data := lo.PickByKeys(body, maps.Keys(dto))
+
+	return data, nil, true
 }
 
 func message(fieldError validator.FieldError) string {

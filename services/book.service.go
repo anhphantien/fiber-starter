@@ -12,7 +12,6 @@ import (
 	"sync"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -134,7 +133,8 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 // @Router  /v1/books [post]
 func (s BookService) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
-	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
+	_, err, ok := utils.ValidateRequestBody(c, &body)
+	if !ok {
 		return err
 	}
 
@@ -162,28 +162,20 @@ func (s BookService) Create(c *fiber.Ctx) error {
 // @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [put]
 func (s BookService) Update(c *fiber.Ctx) error {
+	// q := db.Model(book).Session(&gorm.Session{})
+	// r1 := q.Where("id = ?", id).Take(&book)
+	// r2 := q.Where("id = ?", id).Updates(&book)
 	body := dto.UpdateBookBody{}
-	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
+	data, err, ok := utils.ValidateRequestBody(c, &body)
+	if !ok {
 		return err
 	}
 
-	book := entities.Book{}
-	id := utils.ConvertToID(c.Params("id"))
+	id := c.Params("id")
 
-	// q := db.Model(book).Session(&gorm.Session{})
-	// r1 := q.Where("id = ?", id).Take(&book)
-	r1 := repositories.CreateSqlBuilder(book).
-		Where("id = ?", id).
-		Take(&book)
-	if r1.Error != nil {
-		return errors.SqlError(c, r1.Error)
-	}
-
-	copier.CopyWithOption(&book, &body, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	// r2 := q.Where("id = ?", id).Updates(&book)
-	r2 := repositories.CreateSqlBuilder(book).Updates(&book)
-	if r2.Error != nil {
-		return errors.SqlError(c, r2.Error)
+	book, err := repositories.BookRepository{}.Update(id, data)
+	if err != nil {
+		return errors.SqlError(c, err)
 	}
 
 	return common.HttpResponse(c, common.Response{

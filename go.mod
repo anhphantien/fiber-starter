@@ -7,12 +7,15 @@ require (
 	github.com/gofiber/fiber/v2 v2.34.1
 	github.com/gofiber/jwt/v3 v3.2.12
 	github.com/gofiber/swagger v0.0.1
-	github.com/golang-jwt/jwt/v4 v4.4.1
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.4.0
+	github.com/samber/lo v1.21.0
 	github.com/swaggo/swag v1.8.3
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	github.com/valyala/fasthttp v1.37.0
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
+	golang.org/x/text v0.3.7
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.6
 )
@@ -37,11 +40,9 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.37.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20220615171555-694bf12d69de // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/net v0.0.0-20220622184535-263ec571b305 // indirect
+	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664 // indirect
 	golang.org/x/tools v0.1.11 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

@@ -13,7 +13,8 @@ type BookRepository struct{}
 
 func (r BookRepository) FindOneByID(id any) (book entities.Book, err error) {
 	err = CreateSqlBuilder(book).
-		Where("id = ?", utils.ConvertToID(id)).
+		Joins("User").
+		Where("book.id = ?", utils.ConvertToID(id)).
 		Take(&book).Error
 	return book, err
 }

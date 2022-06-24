@@ -33,7 +33,6 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 		Preload("Books", "TRUE ORDER BY book.id DESC") // LEFT JOIN (one-to-many)
 
 	ch := make(chan error, 2)
-
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 

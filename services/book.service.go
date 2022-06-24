@@ -55,13 +55,12 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	// 	Limit(pagination.Limit).
 	// 	Offset(pagination.Offset).
 	// 	Order(pagination.Order).
-	// 	Find(&books) // repositories.DB.Table("book").Select("1 + 2 AS sum, \"abc\" AS title").Scan(&books)
+	// 	Find(&books)
 	// if r2.Error != nil {
 	// 	return errors.SqlError(c, r2.Error)
 	// }
 
 	ch := make(chan error, 2)
-
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -133,8 +132,7 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 // @Router  /v1/books [post]
 func (s BookService) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
-	_, err, ok := utils.ValidateRequestBody(c, &body)
-	if !ok {
+	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
 	}
 
@@ -162,18 +160,12 @@ func (s BookService) Create(c *fiber.Ctx) error {
 // @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [put]
 func (s BookService) Update(c *fiber.Ctx) error {
-	// q := db.Model(book).Session(&gorm.Session{})
-	// r1 := q.Where("id = ?", id).Take(&book)
-	// r2 := q.Where("id = ?", id).Updates(&book)
 	body := dto.UpdateBookBody{}
-	data, err, ok := utils.ValidateRequestBody(c, &body)
-	if !ok {
+	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
 	}
 
-	id := c.Params("id")
-
-	book, err := repositories.BookRepository{}.Update(id, data)
+	book, err := repositories.BookRepository{}.Update(c, body)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}
@@ -195,19 +187,11 @@ func (s BookService) Delete(c *fiber.Ctx) error {
 	// 	return err
 	// }
 
-	book := entities.Book{}
-	id := utils.ConvertToID(c.Params("id"))
+	id := c.Params("id")
 
-	r1 := repositories.CreateSqlBuilder(book).
-		Where("id = ?", id).
-		Take(&book)
-	if r1.Error != nil {
-		return errors.SqlError(c, r1.Error)
-	}
-
-	r2 := repositories.CreateSqlBuilder(book).Delete(&book)
-	if r2.Error != nil {
-		return errors.SqlError(c, r2.Error)
+	err := repositories.BookRepository{}.Delete(id)
+	if err != nil {
+		return errors.SqlError(c, err)
 	}
 
 	return common.HttpResponse(c, common.Response{})

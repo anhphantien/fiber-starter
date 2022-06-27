@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
+	"gorm.io/gorm/clause"
 )
 
 type BookRepository struct{}
@@ -34,7 +35,9 @@ func (r BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (book enti
 	}
 
 	copier.Copy(&book, body)
-	err = CreateSqlBuilder(book).Updates(utils.FilterRequestBody(c, body)).Error
+	err = CreateSqlBuilder(book).
+		Omit(clause.Associations). // skip auto create/update
+		Updates(utils.FilterRequestBody(c, body)).Error
 	return book, err
 }
 

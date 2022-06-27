@@ -33,7 +33,8 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 
 	q := repositories.CreateSqlBuilder(books).
 		Preload("User")
-		// Joins("User") // LEFT JOIN (one-to-one)
+		/* LEFT JOIN (one-to-one) */
+		// Joins("User")
 		/* INNER JOIN (one-to-one) */
 		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
 		// Joins("INNER JOIN user ON book.user_id = user.id")

@@ -16,7 +16,8 @@ func HttpGet() (map[string]any, error) {
 	client := http.Client{}
 	req, _ := http.NewRequest(http.MethodGet, "<url>", nil)
 	req.Header = http.Header{
-		"Authorization": {"Bearer <token>"},
+		"Content-Type": {"application/json"},
+		// "Authorization": {"Bearer <token>"},
 	}
 	res, err := client.Do(req)
 	if err != nil {

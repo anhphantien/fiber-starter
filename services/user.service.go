@@ -30,7 +30,7 @@ func (s UserService) GetList(c *fiber.Ctx) error {
 	pagination := utils.Pagination(c)
 
 	q := repositories.CreateSqlBuilder(users).
-		Preload("Books", "TRUE ORDER BY book.id DESC")
+		Preload("Books", "TRUE ORDER BY id DESC")
 
 	ch := make(chan error, 2)
 	wg := sync.WaitGroup{}

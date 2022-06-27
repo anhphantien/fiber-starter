@@ -32,9 +32,11 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 	pagination := utils.Pagination(c)
 
 	q := repositories.CreateSqlBuilder(books).
-		Joins("User") // LEFT JOIN (one-to-one)
+		Preload("User")
+		// Joins("User") // LEFT JOIN (one-to-one)
+		/* INNER JOIN (one-to-one) */
 		// Select("book.*" + utils.GetAllColumnsOfTable(entities.User{})).
-		// Joins("INNER JOIN user ON book.user_id = user.id") // INNER JOIN (one-to-one)
+		// Joins("INNER JOIN user ON book.user_id = user.id")
 	if pagination.Filter["id"] != nil {
 		q.Where("book.id = ?", utils.ConvertToID(pagination.Filter["id"]))
 	}

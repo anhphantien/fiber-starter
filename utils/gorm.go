@@ -48,5 +48,5 @@ func GetAllColumnsOfTable(model Model) string {
 	if len(s) == 0 {
 		return ""
 	}
-	return ", " + strings.Join(s[:], ", ")
+	return strings.Join(s[:], ", ")
 }

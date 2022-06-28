@@ -11,7 +11,6 @@ import (
 // @title Fiber starter
 // @version 1.0
 // @description Fiber starter's API documentation
-// @BasePath /api
 
 // @securityDefinitions.apikey BearerAuth
 // @in header

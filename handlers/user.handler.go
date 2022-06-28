@@ -23,7 +23,7 @@ type UserHandler struct{}
 // @Param   filter    query    object false " "
 // @Param   sort      query    object false " "
 // @Success 200       {object} common.Response{data=[]entities.User}
-// @Router  /v1/users [get]
+// @Router  /api/v1/users [get]
 func (h UserHandler) GetList(c *fiber.Ctx) error {
 	users := []entities.User{}
 

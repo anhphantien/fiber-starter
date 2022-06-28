@@ -1,4 +1,4 @@
-package services
+package handlers
 
 import (
 	"fiber-starter/common"
@@ -10,14 +10,14 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-type FileService struct{}
+type FileHandler struct{}
 
 // @Tags    file
 // @Summary Upload a file
 // @Param   file            formData file false " "
 // @Success 201             {object} common.Response{}
 // @Router  /v1/file/upload [post]
-func (s FileService) Upload(c *fiber.Ctx) error {
+func (h FileHandler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
 	if err != nil {
 		switch err {

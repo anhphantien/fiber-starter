@@ -1,4 +1,4 @@
-package services
+package handlers
 
 import (
 	"fiber-starter/common"
@@ -16,14 +16,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthService struct{}
+type AuthHandler struct{}
 
 // @Tags    auth
 // @Summary Login
 // @Param   body           body       dto.LoginBody true " "
 // @Success 201            {object}   common.Response{data=models.LoginResponse}
 // @Router  /v1/auth/login [post]
-func (s AuthService) Login(c *fiber.Ctx) error {
+func (h AuthHandler) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}
 	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err

@@ -1,4 +1,4 @@
-package services
+package handlers
 
 import (
 	"fiber-starter/common"
@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserService struct{}
+type UserHandler struct{}
 
 // @Tags    users
 // @Summary Get a list of users
@@ -24,7 +24,7 @@ type UserService struct{}
 // @Param   sort      query    object false " "
 // @Success 200       {object} common.Response{data=[]entities.User}
 // @Router  /v1/users [get]
-func (s UserService) GetList(c *fiber.Ctx) error {
+func (h UserHandler) GetList(c *fiber.Ctx) error {
 	users := []entities.User{}
 
 	pagination := utils.Pagination(c)

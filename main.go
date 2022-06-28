@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fiber-starter/controllers"
 	"fiber-starter/database"
 	_ "fiber-starter/docs"
 	"fiber-starter/env"
+	"fiber-starter/routers"
 	"log"
 )
 
@@ -21,6 +21,6 @@ func main() {
 		log.Panic("Can't connect to database: ", err.Error())
 	}
 
-	app := controllers.New()
+	app := routers.New()
 	log.Fatal(app.Listen(":" + env.PORT))
 }

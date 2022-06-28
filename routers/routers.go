@@ -1,4 +1,4 @@
-package controllers
+package routers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -15,10 +15,10 @@ func New() *fiber.App {
 	app.Get("swagger/*", swagger.HandlerDefault)
 
 	v1 := app.Group("api/v1")
-	AuthController(v1)
-	BookController(v1)
-	FileController(v1)
-	UserController(v1)
+	AuthRouter(v1)
+	BookRouter(v1)
+	FileRouter(v1)
+	UserRouter(v1)
 
 	return app
 }

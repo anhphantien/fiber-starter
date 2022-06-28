@@ -1,4 +1,4 @@
-package services
+package handlers
 
 import (
 	"database/sql"
@@ -15,7 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type BookService struct{}
+type BookHandler struct{}
 
 // @Tags    books
 // @Summary Get a list of books
@@ -26,7 +26,7 @@ type BookService struct{}
 // @Param   sort      query    object false " "
 // @Success 200       {object} common.Response{data=[]entities.Book}
 // @Router  /v1/books [get]
-func (s BookService) GetList(c *fiber.Ctx) error {
+func (h BookHandler) GetList(c *fiber.Ctx) error {
 	books := []entities.Book{}
 
 	pagination := utils.Pagination(c)
@@ -110,7 +110,7 @@ func (s BookService) GetList(c *fiber.Ctx) error {
 // @Param   id             path     int true " "
 // @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [get]
-func (s BookService) GetByID(c *fiber.Ctx) error {
+func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	book, err := repositories.BookRepository{}.FindOneByID(id)
@@ -128,7 +128,7 @@ func (s BookService) GetByID(c *fiber.Ctx) error {
 // @Param   body      body     dto.CreateBookBody true " "
 // @Success 201       {object} common.Response{data=entities.Book}
 // @Router  /v1/books [post]
-func (s BookService) Create(c *fiber.Ctx) error {
+func (h BookHandler) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
 	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
@@ -157,7 +157,7 @@ func (s BookService) Create(c *fiber.Ctx) error {
 // @Param   body           body     dto.UpdateBookBody true " "
 // @Success 200            {object} common.Response{data=entities.Book}
 // @Router  /v1/books/{id} [put]
-func (s BookService) Update(c *fiber.Ctx) error {
+func (h BookHandler) Update(c *fiber.Ctx) error {
 	body := dto.UpdateBookBody{}
 	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
 		return err
@@ -179,7 +179,7 @@ func (s BookService) Update(c *fiber.Ctx) error {
 // @Param    id             path     int true " "
 // @Success  200            {object} common.Response{}
 // @Router   /v1/books/{id} [delete]
-func (s BookService) Delete(c *fiber.Ctx) error {
+func (h BookHandler) Delete(c *fiber.Ctx) error {
 	// user, err, ok := utils.GetCurrentUser(c)
 	// if !ok {
 	// 	return err

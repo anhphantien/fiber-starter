@@ -35,8 +35,9 @@ func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 						return "This field is required"
 					case "max":
 						return "Max length: " + fieldError.Param()
+					default:
+						return fieldError.Error()
 					}
-					return fieldError.Error()
 				}(fieldError),
 			}
 		}

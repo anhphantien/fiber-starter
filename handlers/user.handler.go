@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"fiber-starter/common"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/models"
 	"fiber-starter/repositories"
+	"fiber-starter/response"
 	"fiber-starter/utils"
 	"sync"
 
@@ -71,7 +71,7 @@ func (h UserHandler) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		Data: models.PaginationResponse{
 			Items: users,
 			Total: total,

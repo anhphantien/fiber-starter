@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"fiber-starter/common"
 	"fiber-starter/errors"
 	"strings"
 
@@ -24,10 +23,10 @@ func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 
 	if err := validator.New().Struct(body); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
-		errors := make([]Error, len(validationErrors))
+		_errors := make([]Error, len(validationErrors))
 
 		for i, fieldError := range validationErrors {
-			errors[i] = Error{
+			_errors[i] = Error{
 				Field: strings.ToLower(fieldError.Field()),
 				Message: func(fieldError validator.FieldError) string {
 					switch fieldError.Tag() {
@@ -42,10 +41,7 @@ func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 			}
 		}
 
-		return common.WriteJSON(c, common.Response{
-			StatusCode: fiber.StatusBadRequest,
-			Error:      errors,
-		}), false
+		return errors.BadRequestException(c, _errors), false
 	}
 
 	return nil, true

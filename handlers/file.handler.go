@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"fiber-starter/common"
 	"fiber-starter/config"
 	"fiber-starter/errors"
+	"fiber-starter/response"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
@@ -49,5 +49,5 @@ func (h FileHandler) Upload(c *fiber.Ctx) error {
 
 	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
 
-	return common.WriteJSON(c, common.Response{})
+	return response.WriteJSON(c, response.Response{})
 }

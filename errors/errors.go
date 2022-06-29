@@ -1,7 +1,7 @@
 package errors
 
 import (
-	"fiber-starter/common"
+	"fiber-starter/response"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -16,15 +16,23 @@ const (
 	PERMISSION_DENIED   = "permission denied"
 )
 
-func BadRequestException(c *fiber.Ctx, message string) error {
-	return common.WriteJSON(c, common.Response{
-		StatusCode: fiber.StatusBadRequest,
-		Message:    message,
-	})
+func BadRequestException(c *fiber.Ctx, err any) error {
+	switch err := err.(type) {
+	case string:
+		return response.WriteJSON(c, response.Response{
+			StatusCode: fiber.StatusBadRequest,
+			Message:    err,
+		})
+	default:
+		return response.WriteJSON(c, response.Response{
+			StatusCode: fiber.StatusBadRequest,
+			Error:      err,
+		})
+	}
 }
 
 func UnauthorizedException(c *fiber.Ctx, message string) error {
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusUnauthorized,
 		Message:    message,
 	})
@@ -35,7 +43,7 @@ func ForbiddenException(c *fiber.Ctx, messages ...string) error {
 	if len(messages) > 0 {
 		message = messages[0]
 	}
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusForbidden,
 		Message:    message,
 	})
@@ -46,7 +54,7 @@ func NotFoundException(c *fiber.Ctx, messages ...string) error {
 	if len(messages) > 0 {
 		message = messages[0]
 	}
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusNotFound,
 		Message:    message,
 	})
@@ -57,14 +65,14 @@ func RequestEntityTooLargeException(c *fiber.Ctx, messages ...string) error {
 	if len(messages) > 0 {
 		message = messages[0]
 	}
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusRequestEntityTooLarge,
 		Message:    message,
 	})
 }
 
 func InternalServerErrorException(c *fiber.Ctx, message string) error {
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusInternalServerError,
 		Message:    message,
 	})

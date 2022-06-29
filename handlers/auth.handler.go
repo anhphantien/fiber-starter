@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"fiber-starter/common"
 	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/env"
 	"fiber-starter/errors"
 	"fiber-starter/models"
 	"fiber-starter/repositories"
+	"fiber-starter/response"
 	"fiber-starter/utils"
 	"time"
 
@@ -61,7 +61,7 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 		},
 	).SignedString(env.JWT_SECRET)
 
-	return common.WriteJSON(c, (common.Response{
+	return response.WriteJSON(c, (response.Response{
 		Data: models.LoginResponse{
 			AccessToken: token,
 		},

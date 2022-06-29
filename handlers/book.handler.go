@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"database/sql"
-	"fiber-starter/common"
 	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/models"
 	"fiber-starter/repositories"
+	"fiber-starter/response"
 	"fiber-starter/utils"
 	"sync"
 
@@ -97,7 +97,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		Data: models.PaginationResponse{
 			Items: books,
 			Total: total,
@@ -118,7 +118,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		Data: book,
 	})
 }
@@ -146,7 +146,7 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		Data: book,
 	})
 }
@@ -168,7 +168,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.WriteJSON(c, common.Response{
+	return response.WriteJSON(c, response.Response{
 		Data: book,
 	})
 }
@@ -192,5 +192,5 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.WriteJSON(c, common.Response{})
+	return response.WriteJSON(c, response.Response{})
 }

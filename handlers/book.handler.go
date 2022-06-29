@@ -24,7 +24,7 @@ type BookHandler struct{}
 // @Param   keyword       query    string false " "
 // @Param   filter        query    object false " "
 // @Param   sort          query    object false " "
-// @Success 200           {object} common.Response{data=[]entities.Book}
+// @Success 200           {object} response.Response{data=[]entities.Book}
 // @Router  /api/v1/books [GET]
 func (h BookHandler) GetList(c *fiber.Ctx) error {
 	books := []entities.Book{}
@@ -108,7 +108,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 // @Tags    books
 // @Summary Get a book by ID
 // @Param   id                 path     int true " "
-// @Success 200                {object} common.Response{data=entities.Book}
+// @Success 200                {object} response.Response{data=entities.Book}
 // @Router  /api/v1/books/{id} [GET]
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -126,7 +126,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 // @Tags    books
 // @Summary Create a new book
 // @Param   body          body     dto.CreateBookBody true " "
-// @Success 201           {object} common.Response{data=entities.Book}
+// @Success 201           {object} response.Response{data=entities.Book}
 // @Router  /api/v1/books [POST]
 func (h BookHandler) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
@@ -155,7 +155,7 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 // @Summary Update a book
 // @Param   id                 path     int true " "
 // @Param   body               body     dto.UpdateBookBody true " "
-// @Success 200                {object} common.Response{data=entities.Book}
+// @Success 200                {object} response.Response{data=entities.Book}
 // @Router  /api/v1/books/{id} [PUT]
 func (h BookHandler) Update(c *fiber.Ctx) error {
 	body := dto.UpdateBookBody{}
@@ -177,7 +177,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 // @Summary  Delete a book
 // @Tags     books
 // @Param    id                 path     int true " "
-// @Success  200                {object} common.Response{}
+// @Success  200                {object} response.Response{}
 // @Router   /api/v1/books/{id} [DELETE]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
 	// user, err, ok := utils.GetCurrentUser(c)

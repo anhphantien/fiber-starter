@@ -21,7 +21,7 @@ type AuthHandler struct{}
 // @Tags    auth
 // @Summary Login
 // @Param   body               body     dto.LoginBody true " "
-// @Success 201                {object} common.Response{data=models.LoginResponse}
+// @Success 201                {object} response.Response{data=models.LoginResponse}
 // @Router  /api/v1/auth/login [POST]
 func (h AuthHandler) Login(c *fiber.Ctx) error {
 	body := dto.LoginBody{}

@@ -26,7 +26,7 @@ func BadRequestException(c *fiber.Ctx, err any) error {
 	default:
 		return response.WriteJSON(c, response.Response{
 			StatusCode: fiber.StatusBadRequest,
-			Error:      err,
+			Error:      err.([]response.Error),
 		})
 	}
 }

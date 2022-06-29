@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fiber-starter/errors"
+	"fiber-starter/response"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -11,11 +12,6 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-type Error struct {
-	Field   string `json:"field"`
-	Message string `json:"message"`
-}
-
 func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 	if err := c.BodyParser(body); err != nil {
 		return errors.BadRequestException(c, err.Error()), false
@@ -23,10 +19,10 @@ func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 
 	if err := validator.New().Struct(body); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
-		_errors := make([]Error, len(validationErrors))
+		_errors := make([]response.Error, len(validationErrors))
 
 		for i, fieldError := range validationErrors {
-			_errors[i] = Error{
+			_errors[i] = response.Error{
 				Field: strings.ToLower(fieldError.Field()),
 				Message: func(fieldError validator.FieldError) string {
 					switch fieldError.Tag() {

@@ -25,7 +25,7 @@ type BookHandler struct{}
 // @Param   filter        query    object false " "
 // @Param   sort          query    object false " "
 // @Success 200           {object} common.Response{data=[]entities.Book}
-// @Router  /api/v1/books [get]
+// @Router  /api/v1/books [GET]
 func (h BookHandler) GetList(c *fiber.Ctx) error {
 	books := []entities.Book{}
 
@@ -109,7 +109,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 // @Summary Get a book by ID
 // @Param   id                 path     int true " "
 // @Success 200                {object} common.Response{data=entities.Book}
-// @Router  /api/v1/books/{id} [get]
+// @Router  /api/v1/books/{id} [GET]
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -127,7 +127,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 // @Summary Create a new book
 // @Param   body          body     dto.CreateBookBody true " "
 // @Success 201           {object} common.Response{data=entities.Book}
-// @Router  /api/v1/books [post]
+// @Router  /api/v1/books [POST]
 func (h BookHandler) Create(c *fiber.Ctx) error {
 	body := dto.CreateBookBody{}
 	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
@@ -156,7 +156,7 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 // @Param   id                 path     int true " "
 // @Param   body               body     dto.UpdateBookBody true " "
 // @Success 200                {object} common.Response{data=entities.Book}
-// @Router  /api/v1/books/{id} [put]
+// @Router  /api/v1/books/{id} [PUT]
 func (h BookHandler) Update(c *fiber.Ctx) error {
 	body := dto.UpdateBookBody{}
 	if err, ok := utils.ValidateRequestBody(c, &body); !ok {
@@ -178,7 +178,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 // @Tags     books
 // @Param    id                 path     int true " "
 // @Success  200                {object} common.Response{}
-// @Router   /api/v1/books/{id} [delete]
+// @Router   /api/v1/books/{id} [DELETE]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
 	// user, err, ok := utils.GetCurrentUser(c)
 	// if !ok {

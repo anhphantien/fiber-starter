@@ -49,5 +49,5 @@ func (h FileHandler) Upload(c *fiber.Ctx) error {
 
 	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
 
-	return common.HttpResponse(c, common.Response{})
+	return common.WriteJSON(c, common.Response{})
 }

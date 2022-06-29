@@ -42,7 +42,7 @@ func ValidateRequestBody(c *fiber.Ctx, body any) (error, bool) {
 			}
 		}
 
-		return common.HttpResponse(c, common.Response{
+		return common.WriteJSON(c, common.Response{
 			StatusCode: fiber.StatusBadRequest,
 			Error:      errors,
 		}), false

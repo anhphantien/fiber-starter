@@ -97,7 +97,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		Data: models.PaginationResponse{
 			Items: books,
 			Total: total,
@@ -118,7 +118,7 @@ func (h BookHandler) GetByID(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		Data: book,
 	})
 }
@@ -146,7 +146,7 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		Data: book,
 	})
 }
@@ -168,7 +168,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		Data: book,
 	})
 }
@@ -192,5 +192,5 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return common.HttpResponse(c, common.Response{})
+	return common.WriteJSON(c, common.Response{})
 }

@@ -61,7 +61,7 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 		},
 	).SignedString(env.JWT_SECRET)
 
-	return common.HttpResponse(c, (common.Response{
+	return common.WriteJSON(c, (common.Response{
 		Data: models.LoginResponse{
 			AccessToken: token,
 		},

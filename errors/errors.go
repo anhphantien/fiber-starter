@@ -17,14 +17,14 @@ const (
 )
 
 func BadRequestException(c *fiber.Ctx, message string) error {
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusBadRequest,
 		Message:    message,
 	})
 }
 
 func UnauthorizedException(c *fiber.Ctx, message string) error {
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusUnauthorized,
 		Message:    message,
 	})
@@ -32,12 +32,12 @@ func UnauthorizedException(c *fiber.Ctx, message string) error {
 
 func ForbiddenException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return common.HttpResponse(c, common.Response{
+		return common.WriteJSON(c, common.Response{
 			StatusCode: fiber.StatusForbidden,
 			Message:    PERMISSION_DENIED,
 		})
 	}
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusForbidden,
 		Message:    message[0],
 	})
@@ -45,12 +45,12 @@ func ForbiddenException(c *fiber.Ctx, message ...string) error {
 
 func NotFoundException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return common.HttpResponse(c, common.Response{
+		return common.WriteJSON(c, common.Response{
 			StatusCode: fiber.StatusNotFound,
 			Message:    DATA_NOT_FOUND,
 		})
 	}
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusNotFound,
 		Message:    message[0],
 	})
@@ -58,19 +58,19 @@ func NotFoundException(c *fiber.Ctx, message ...string) error {
 
 func RequestEntityTooLargeException(c *fiber.Ctx, message ...string) error {
 	if len(message) == 0 {
-		return common.HttpResponse(c, common.Response{
+		return common.WriteJSON(c, common.Response{
 			StatusCode: fiber.StatusRequestEntityTooLarge,
 			Message:    PAYLOAD_TOO_LARGE,
 		})
 	}
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusRequestEntityTooLarge,
 		Message:    message[0],
 	})
 }
 
 func InternalServerErrorException(c *fiber.Ctx, message string) error {
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusInternalServerError,
 		Message:    message,
 	})

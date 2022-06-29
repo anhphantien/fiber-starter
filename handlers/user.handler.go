@@ -71,7 +71,7 @@ func (h UserHandler) GetList(c *fiber.Ctx) error {
 		}
 	}
 
-	return common.HttpResponse(c, common.Response{
+	return common.WriteJSON(c, common.Response{
 		Data: models.PaginationResponse{
 			Items: users,
 			Total: total,

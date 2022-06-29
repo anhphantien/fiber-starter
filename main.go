@@ -12,7 +12,7 @@ import (
 // @version 1.0
 // @description Fiber starter's API documentation
 
-// @securityDefinitions.apikey BearerAuth
+// @securityDefinitions.apikey Bearer
 // @in header
 // @name Authorization
 func main() {

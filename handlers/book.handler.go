@@ -173,7 +173,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 	})
 }
 
-// @Security BearerAuth
+// @Security Bearer
 // @Summary  Delete a book
 // @Tags     books
 // @Param    id             path     int true " "

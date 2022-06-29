@@ -4,6 +4,7 @@ import (
 	"fiber-starter/env"
 	"fiber-starter/repositories"
 	"fmt"
+	"log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ var (
 	dbname   = env.DB_NAME
 )
 
-func Connect() (err error) {
+func Connect() {
 	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true"
 	fmt.Println(dsn)
 
@@ -29,9 +30,8 @@ func Connect() (err error) {
 		},
 	)
 	if err != nil {
-		return err
+		log.Panic("Can't connect to database: ", err.Error())
 	}
 
 	repositories.Sync(db)
-	return
 }

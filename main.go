@@ -16,10 +16,7 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	if err := database.Connect(); err != nil {
-		log.Panic("Can't connect to database: ", err.Error())
-	}
-
+	database.Connect()
 	app := routers.New()
 	log.Fatal(app.Listen(":" + env.PORT))
 }

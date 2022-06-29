@@ -8,12 +8,12 @@ import (
 	"log"
 )
 
-// @title Fiber starter
-// @version 1.0
+// @title       Fiber starter
+// @version     1.0
 // @description Fiber starter's API documentation
 
 // @securityDefinitions.apikey Bearer
-// @in header
+// @in   header
 // @name Authorization
 func main() {
 	database.Connect()

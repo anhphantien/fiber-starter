@@ -30,42 +30,36 @@ func UnauthorizedException(c *fiber.Ctx, message string) error {
 	})
 }
 
-func ForbiddenException(c *fiber.Ctx, message ...string) error {
-	if len(message) == 0 {
-		return common.WriteJSON(c, common.Response{
-			StatusCode: fiber.StatusForbidden,
-			Message:    PERMISSION_DENIED,
-		})
+func ForbiddenException(c *fiber.Ctx, messages ...string) error {
+	message := PERMISSION_DENIED
+	if len(messages) > 0 {
+		message = messages[0]
 	}
 	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusForbidden,
-		Message:    message[0],
+		Message:    message,
 	})
 }
 
-func NotFoundException(c *fiber.Ctx, message ...string) error {
-	if len(message) == 0 {
-		return common.WriteJSON(c, common.Response{
-			StatusCode: fiber.StatusNotFound,
-			Message:    DATA_NOT_FOUND,
-		})
+func NotFoundException(c *fiber.Ctx, messages ...string) error {
+	message := DATA_NOT_FOUND
+	if len(messages) > 0 {
+		message = messages[0]
 	}
 	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusNotFound,
-		Message:    message[0],
+		Message:    message,
 	})
 }
 
-func RequestEntityTooLargeException(c *fiber.Ctx, message ...string) error {
-	if len(message) == 0 {
-		return common.WriteJSON(c, common.Response{
-			StatusCode: fiber.StatusRequestEntityTooLarge,
-			Message:    PAYLOAD_TOO_LARGE,
-		})
+func RequestEntityTooLargeException(c *fiber.Ctx, messages ...string) error {
+	message := PAYLOAD_TOO_LARGE
+	if len(messages) > 0 {
+		message = messages[0]
 	}
 	return common.WriteJSON(c, common.Response{
 		StatusCode: fiber.StatusRequestEntityTooLarge,
-		Message:    message[0],
+		Message:    message,
 	})
 }
 

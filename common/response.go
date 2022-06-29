@@ -9,13 +9,13 @@ type Response struct {
 	Error      any    `json:"error,omitempty"`
 }
 
-func WriteJSON(c *fiber.Ctx, response Response) error {
-	if response.StatusCode == 0 {
+func WriteJSON(c *fiber.Ctx, payload Response) error {
+	if payload.StatusCode == 0 {
 		if c.Route().Method == fiber.MethodPost {
-			response.StatusCode = fiber.StatusCreated
+			payload.StatusCode = fiber.StatusCreated
 		} else {
-			response.StatusCode = fiber.StatusOK
+			payload.StatusCode = fiber.StatusOK
 		}
 	}
-	return c.Status(response.StatusCode).JSON(response)
+	return c.Status(payload.StatusCode).JSON(payload)
 }

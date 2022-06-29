@@ -14,8 +14,8 @@ type FileHandler struct{}
 
 // @Tags    file
 // @Summary Upload a file
-// @Param   file            formData file false " "
-// @Success 201             {object} common.Response{}
+// @Param   file                formData file false " "
+// @Success 201                 {object} common.Response{}
 // @Router  /api/v1/file/upload [post]
 func (h FileHandler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")

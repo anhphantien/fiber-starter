@@ -17,12 +17,12 @@ type UserHandler struct{}
 
 // @Tags    users
 // @Summary Get a list of users
-// @Param   limit     query    int false " "
-// @Param   page      query    int false " "
-// @Param   keyword   query    string false " "
-// @Param   filter    query    object false " "
-// @Param   sort      query    object false " "
-// @Success 200       {object} common.Response{data=[]entities.User}
+// @Param   limit         query    int    false " "
+// @Param   page          query    int    false " "
+// @Param   keyword       query    string false " "
+// @Param   filter        query    object false " "
+// @Param   sort          query    object false " "
+// @Success 200           {object} common.Response{data=[]entities.User}
 // @Router  /api/v1/users [get]
 func (h UserHandler) GetList(c *fiber.Ctx) error {
 	users := []entities.User{}

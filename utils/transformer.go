@@ -1,8 +1,6 @@
 package utils
 
-import (
-	"strconv"
-)
+import "strconv"
 
 func ConvertToID(v any) uint64 {
 	switch _v := v.(type) {

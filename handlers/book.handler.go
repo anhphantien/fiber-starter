@@ -192,5 +192,7 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 		return errors.SqlError(c, err)
 	}
 
-	return response.WriteJSON(c, response.Response{})
+	return response.WriteJSON(c, response.Response{
+		Data: true,
+	})
 }

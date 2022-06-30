@@ -13,8 +13,8 @@ func FilterRequestBody(c *fiber.Ctx, payload any) map[string]any {
 	_dto, _ := json.Marshal(payload)
 	json.Unmarshal(_dto, &dto)
 
-	rawBody := map[string]any{}
-	json.Unmarshal(c.Body(), &rawBody)
+	body := map[string]any{}
+	json.Unmarshal(c.Body(), &body)
 
-	return lo.PickByKeys(rawBody, maps.Keys(dto))
+	return lo.PickByKeys(body, maps.Keys(dto))
 }

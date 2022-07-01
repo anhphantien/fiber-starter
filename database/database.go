@@ -33,5 +33,5 @@ func Connect() {
 		log.Panic("Can't connect to database: ", err.Error())
 	}
 
-	repositories.Sync(db)
+	repositories.New(db)
 }

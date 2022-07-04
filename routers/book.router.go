@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"fiber-starter/enums"
 	"fiber-starter/handlers"
 	"fiber-starter/middlewares"
 
@@ -8,11 +9,13 @@ import (
 )
 
 func BookRouter(r fiber.Router) {
-	// r.Use(
-	// 	middlewares.JwtAuth(),
-	// 	middlewares.AdminRole,
-	// 	middlewares.UserRole,
-	// )
+	r.Use(
+		// middlewares.JwtAuth(),
+		middlewares.RoleAuth(
+			enums.User.Role.ADMIN,
+			enums.User.Role.USER,
+		),
+	)
 
 	r.Get("books", handlers.BookHandler{}.GetList)
 

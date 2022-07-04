@@ -5,10 +5,12 @@ import (
 	"fiber-starter/dto"
 	"fiber-starter/entities"
 	"fiber-starter/errors"
+	"fiber-starter/middlewares"
 	"fiber-starter/models"
 	"fiber-starter/repositories"
 	"fiber-starter/response"
 	"fiber-starter/utils"
+	"fmt"
 	"sync"
 
 	"github.com/gofiber/fiber/v2"
@@ -180,7 +182,8 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 // @Success  200                object   response.Response{data=boolean}
 // @Router   /api/v1/books/{id} [DELETE]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
-	// user, err, ok := utils.GetCurrentUser(c)
+	user := middlewares.GetCurrentUser(c)
+	fmt.Println(user)
 	// if !ok {
 	// 	return err
 	// }

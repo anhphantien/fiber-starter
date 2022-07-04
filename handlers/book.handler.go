@@ -113,7 +113,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	book, err := repositories.BookRepository{}.FindOneByID(id)
+	book, err := bookRepository.FindOneByID(id)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}
@@ -135,13 +135,13 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 	}
 
 	if body.UserID != nil {
-		_, err := repositories.UserRepository{}.FindOneByID(body.UserID)
+		_, err := userRepository.FindOneByID(body.UserID)
 		if err != nil {
 			return errors.SqlError(c, err)
 		}
 	}
 
-	book, err := repositories.BookRepository{}.Create(body)
+	book, err := bookRepository.Create(body)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}
@@ -163,7 +163,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 		return err
 	}
 
-	book, err := repositories.BookRepository{}.Update(c, body)
+	book, err := bookRepository.Update(c, body)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}
@@ -187,7 +187,7 @@ func (h BookHandler) Delete(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	err := repositories.BookRepository{}.Delete(id)
+	err := bookRepository.Delete(id)
 	if err != nil {
 		return errors.SqlError(c, err)
 	}

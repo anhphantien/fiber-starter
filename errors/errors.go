@@ -31,13 +31,15 @@ func BadRequestException(c *fiber.Ctx, err any) error {
 	}
 }
 
-func UnauthorizedException(c *fiber.Ctx, message ...string) error {
-	if len(message) == 0 {
-		message = nil
+func UnauthorizedException(c *fiber.Ctx, messages ...string) error {
+	if len(messages) == 0 {
+		return response.WriteJSON(c, response.Response{
+			StatusCode: fiber.StatusUnauthorized,
+		})
 	}
 	return response.WriteJSON(c, response.Response{
 		StatusCode: fiber.StatusUnauthorized,
-		Message:    message[0],
+		Message:    messages[0],
 	})
 }
 

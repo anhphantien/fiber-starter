@@ -9,13 +9,13 @@ import (
 )
 
 func BookRouter(r fiber.Router) {
-	r.Use(
-		// middlewares.JwtAuth(),
-		middlewares.RoleAuth(
-			enums.User.Role.ADMIN,
-			enums.User.Role.USER,
-		),
-	)
+	// r.Use(
+	// 	middlewares.JwtAuth(),
+	// 	middlewares.RoleAuth(
+	// 		enums.User.Role.ADMIN,
+	// 		enums.User.Role.USER,
+	// 	),
+	// )
 
 	r.Get("books", handlers.BookHandler{}.GetList)
 
@@ -27,8 +27,10 @@ func BookRouter(r fiber.Router) {
 
 	r.Delete("books/:id",
 		middlewares.JwtAuth(),
-		// middlewares.AdminRole,
-		middlewares.UserRole,
+		middlewares.RoleAuth(
+			// enums.User.Role.ADMIN,
+			enums.User.Role.USER,
+		),
 		handlers.BookHandler{}.Delete,
 	)
 }

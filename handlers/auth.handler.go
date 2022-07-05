@@ -30,12 +30,12 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 	}
 
 	user := entities.User{}
-	r := repositories.
+	err := repositories.
 		CreateSqlBuilder(user).
 		Where("username = ?", body.Username).
-		Take(&user)
-	if r.Error != nil {
-		return errors.SqlError(c, r.Error)
+		Take(&user).Error
+	if err != nil {
+		return errors.SqlError(c, err)
 	}
 	if err := bcrypt.
 		CompareHashAndPassword(

@@ -3,6 +3,7 @@ package repositories
 import (
 	"fiber-starter/dto"
 	"fiber-starter/entities"
+	"fiber-starter/errors"
 	"fiber-starter/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,43 +11,57 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+var book = entities.Book{}
+
 type BookRepository struct{}
 
-func (r BookRepository) FindOneByID(id any) (book entities.Book, err error) {
-	err = CreateSqlBuilder(book).
+func (repository BookRepository) FindOneByID(c *fiber.Ctx, id any) (entities.Book, error, bool) {
+	err := CreateSqlBuilder(book).
 		Joins("User").
 		Where("book.id = ?", utils.ConvertToID(id)).
 		Take(&book).Error
-	return
+	if err != nil {
+		return book, errors.SqlError(c, err), false
+	}
+	return book, nil, true
 }
 
-func (r BookRepository) Create(body dto.CreateBookBody) (book entities.Book, err error) {
+func (repository BookRepository) Create(c *fiber.Ctx, body dto.CreateBookBody) (entities.Book, error, bool) {
 	copier.Copy(&book, body)
-	err = CreateSqlBuilder(book).Create(&book).Error
-	return
+	err := CreateSqlBuilder(book).Create(&book).Error
+	if err != nil {
+		return book, errors.SqlError(c, err), false
+	}
+	return book, nil, true
 }
 
-func (r BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (book entities.Book, err error) {
+func (repository BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (entities.Book, error, bool) {
 	id := c.Params("id")
 
-	book, err = BookRepository{}.FindOneByID(id)
-	if err != nil {
-		return
+	book, err, ok := repository.FindOneByID(c, id)
+	if !ok {
+		return book, errors.SqlError(c, err), false
 	}
 
 	copier.Copy(&book, body)
 	err = CreateSqlBuilder(book).
 		Omit(clause.Associations). // skip auto create/update
 		Updates(utils.FilterRequestBody(c, body)).Error
-	return
+	if err != nil {
+		return book, errors.SqlError(c, err), false
+	}
+	return book, nil, true
 }
 
-func (r BookRepository) Delete(id any) (err error) {
-	book, err := BookRepository{}.FindOneByID(id)
-	if err != nil {
-		return
+func (repository BookRepository) Delete(c *fiber.Ctx, id any) (error, bool) {
+	book, err, ok := repository.FindOneByID(c, id)
+	if !ok {
+		return errors.SqlError(c, err), false
 	}
 
 	err = CreateSqlBuilder(book).Delete(&book).Error
-	return
+	if !ok {
+		return errors.SqlError(c, err), false
+	}
+	return nil, true
 }

@@ -11,9 +11,9 @@ import (
 
 func RoleAuth(roles ...string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		user, ok := GetCurrentUser(c)
+		user, err, ok := GetCurrentUser(c)
 		if !ok {
-			return errors.UnauthorizedException(c)
+			return err
 		}
 		if len(roles) > 0 && !slices.Contains(roles, user.Role) {
 			return errors.ForbiddenException(c)
@@ -22,11 +22,11 @@ func RoleAuth(roles ...string) fiber.Handler {
 	}
 }
 
-func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, bool) {
+func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, error, bool) {
 	user := models.CurrentUser{}
 
 	if c.Locals("user") == nil {
-		return user, false
+		return user, errors.UnauthorizedException(c), false
 	}
 
 	claims := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
@@ -37,5 +37,5 @@ func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, bool) {
 		IssuedAt:  int64(claims["iat"].(float64)),
 		ExpiresAt: int64(claims["exp"].(float64)),
 	}
-	return user, true
+	return user, nil, true
 }

@@ -115,9 +115,9 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	book, err := bookRepository.FindOneByID(id)
-	if err != nil {
-		return errors.SqlError(c, err)
+	book, err, ok := bookRepository.FindOneByID(c, id)
+	if !ok {
+		return err
 	}
 
 	return response.WriteJSON(c, response.Response{
@@ -137,15 +137,15 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 	}
 
 	if body.UserID != nil {
-		_, err := userRepository.FindOneByID(body.UserID)
-		if err != nil {
-			return errors.SqlError(c, err)
+		_, err, ok := userRepository.FindOneByID(c, body.UserID)
+		if !ok {
+			return err
 		}
 	}
 
-	book, err := bookRepository.Create(body)
-	if err != nil {
-		return errors.SqlError(c, err)
+	book, err, ok := bookRepository.Create(c, body)
+	if !ok {
+		return err
 	}
 
 	return response.WriteJSON(c, response.Response{
@@ -165,9 +165,9 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 		return err
 	}
 
-	book, err := bookRepository.Update(c, body)
-	if err != nil {
-		return errors.SqlError(c, err)
+	book, err, ok := bookRepository.Update(c, body)
+	if !ok {
+		return err
 	}
 
 	return response.WriteJSON(c, response.Response{
@@ -182,16 +182,16 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 // @Success  200                object   response.Response{data=boolean}
 // @Router   /api/v1/books/{id} [DELETE]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
-	// user, ok := middlewares.GetCurrentUser(c)
+	// user, err, ok := middlewares.GetCurrentUser(c)
 	// if !ok {
-	// 	return errors.UnauthorizedException(c)
+	// 	return err
 	// }
 
 	id := c.Params("id")
 
-	err := bookRepository.Delete(id)
-	if err != nil {
-		return errors.SqlError(c, err)
+	err, ok := bookRepository.Delete(c, id)
+	if !ok {
+		return err
 	}
 
 	return response.WriteJSON(c, response.Response{

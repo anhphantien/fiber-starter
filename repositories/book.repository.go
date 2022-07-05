@@ -17,13 +17,13 @@ func (r BookRepository) FindOneByID(id any) (book entities.Book, err error) {
 		Joins("User").
 		Where("book.id = ?", utils.ConvertToID(id)).
 		Take(&book).Error
-	return book, err
+	return
 }
 
 func (r BookRepository) Create(body dto.CreateBookBody) (book entities.Book, err error) {
 	copier.Copy(&book, body)
 	err = CreateSqlBuilder(book).Create(&book).Error
-	return book, err
+	return
 }
 
 func (r BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (book entities.Book, err error) {
@@ -31,22 +31,22 @@ func (r BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (book enti
 
 	book, err = BookRepository{}.FindOneByID(id)
 	if err != nil {
-		return book, err
+		return
 	}
 
 	copier.Copy(&book, body)
 	err = CreateSqlBuilder(book).
 		Omit(clause.Associations). // skip auto create/update
 		Updates(utils.FilterRequestBody(c, body)).Error
-	return book, err
+	return
 }
 
 func (r BookRepository) Delete(id any) (err error) {
 	book, err := BookRepository{}.FindOneByID(id)
 	if err != nil {
-		return err
+		return
 	}
 
 	err = CreateSqlBuilder(book).Delete(&book).Error
-	return err
+	return
 }

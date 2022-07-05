@@ -16,10 +16,10 @@ func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
 
 	if err := validator.New().Struct(payload); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
-		_errors := make([]response.Error, len(validationErrors))
+		err := make([]response.Error, len(validationErrors))
 
 		for i, fieldError := range validationErrors {
-			_errors[i] = response.Error{
+			err[i] = response.Error{
 				Field: strings.ToLower(fieldError.Field()),
 				Message: func(fieldError validator.FieldError) string {
 					switch fieldError.Tag() {
@@ -33,9 +33,7 @@ func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
 				}(fieldError),
 			}
 		}
-
-		return errors.BadRequestException(c, _errors), false
+		return errors.BadRequestException(c, err), false
 	}
-
 	return nil, true
 }

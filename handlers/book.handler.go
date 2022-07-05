@@ -43,19 +43,21 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 		)
 	}
 
+	// var err error
+
 	// var total int64
-	// r1 := q.Count(&total)
-	// if r1.Error != nil {
-	// 	return errors.SqlError(c, r1.Error)
+	// err = q.Count(&total).Error
+	// if err != nil {
+	// 	return errors.SqlError(c, err)
 	// }
 
-	// r2 := q.
+	// err = q.
 	// 	Limit(pagination.Limit).
 	// 	Offset(pagination.Offset).
 	// 	Order(pagination.Order).
-	// 	Find(&books)
-	// if r2.Error != nil {
-	// 	return errors.SqlError(c, r2.Error)
+	// 	Find(&books).Error
+	// if err != nil {
+	// 	return errors.SqlError(c, err)
 	// }
 
 	ch := make(chan error, 2)
@@ -66,25 +68,25 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 	go func() {
 		defer wg.Done()
 
-		r := q.
+		err := q.
 			Session(&gorm.Session{}). // clone
-			Count(&total)
-		if r.Error != nil {
-			ch <- r.Error
+			Count(&total).Error
+		if err != nil {
+			ch <- err
 		}
 	}()
 
 	go func() {
 		defer wg.Done()
 
-		r := q.
+		err := q.
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Offset).
 			Order(pagination.Order).
-			Find(&books)
-		if r.Error != nil {
-			ch <- r.Error
+			Find(&books).Error
+		if err != nil {
+			ch <- err
 		}
 	}()
 

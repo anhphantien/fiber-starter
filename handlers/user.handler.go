@@ -40,25 +40,25 @@ func (h UserHandler) GetList(c *fiber.Ctx) error {
 	go func() {
 		defer wg.Done()
 
-		r := q.
+		err := q.
 			Session(&gorm.Session{}). // clone
-			Count(&total)
-		if r.Error != nil {
-			ch <- r.Error
+			Count(&total).Error
+		if err != nil {
+			ch <- err
 		}
 	}()
 
 	go func() {
 		defer wg.Done()
 
-		r := q.
+		err := q.
 			Session(&gorm.Session{}). // clone
 			Limit(pagination.Limit).
 			Offset(pagination.Offset).
 			Order(pagination.Order).
-			Find(&users)
-		if r.Error != nil {
-			ch <- r.Error
+			Find(&users).Error
+		if err != nil {
+			ch <- err
 		}
 	}()
 

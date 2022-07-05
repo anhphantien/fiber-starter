@@ -44,10 +44,10 @@ func (h FileHandler) Upload(c *fiber.Ctx) error {
 	buffer := make([]byte, file.Size)
 	stream.Read(buffer)
 
-	// f, _ := os.Create(fmt.Sprint("./", file.Filename))
+	// f, _ := os.Create("./" + file.Filename)
 	// f.Write(buffer)
 
-	// c.SaveFile(file, fmt.Sprint("./", file.Filename))
+	// c.SaveFile(file, "./"+file.Filename)
 
 	return response.WriteJSON(c, response.Response{})
 }

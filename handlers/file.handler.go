@@ -37,7 +37,7 @@ func (h FileHandler) Upload(c *fiber.Ctx) error {
 	}
 
 	if file.Size > config.File.MaxSize {
-		return errors.RequestEntityTooLargeException(c)
+		return errors.PayloadTooLargeException(c)
 	}
 
 	stream, _ := file.Open()

@@ -65,7 +65,7 @@ func NotFoundException(c *fiber.Ctx, messages ...string) error {
 	})
 }
 
-func RequestEntityTooLargeException(c *fiber.Ctx, messages ...string) error {
+func PayloadTooLargeException(c *fiber.Ctx, messages ...string) error {
 	message := PAYLOAD_TOO_LARGE
 	if len(messages) > 0 {
 		message = messages[0]

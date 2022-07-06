@@ -12,7 +12,7 @@ var user = entities.User{}
 
 type UserRepository struct{}
 
-func (r UserRepository) FindOneByID(c *fiber.Ctx, id any) (entities.User, error, bool) {
+func (r UserRepository) FindByID(c *fiber.Ctx, id any) (entities.User, error, bool) {
 	err := CreateSqlBuilder(user).
 		Where("id = ?", utils.ConvertToID(id)).
 		Take(&user).Error

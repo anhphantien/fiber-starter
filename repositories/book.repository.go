@@ -15,7 +15,7 @@ var book = entities.Book{}
 
 type BookRepository struct{}
 
-func (repository BookRepository) FindOneByID(c *fiber.Ctx, id any) (entities.Book, error, bool) {
+func (repository BookRepository) FindByID(c *fiber.Ctx, id any) (entities.Book, error, bool) {
 	err := CreateSqlBuilder(book).
 		Joins("User").
 		Where("book.id = ?", utils.ConvertToID(id)).
@@ -38,7 +38,7 @@ func (repository BookRepository) Create(c *fiber.Ctx, body dto.CreateBookBody) (
 func (repository BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (entities.Book, error, bool) {
 	id := c.Params("id")
 
-	book, err, ok := repository.FindOneByID(c, id)
+	book, err, ok := repository.FindByID(c, id)
 	if !ok {
 		return book, errors.SqlError(c, err), false
 	}
@@ -54,7 +54,7 @@ func (repository BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (
 }
 
 func (repository BookRepository) Delete(c *fiber.Ctx, id any) (error, bool) {
-	book, err, ok := repository.FindOneByID(c, id)
+	book, err, ok := repository.FindByID(c, id)
 	if !ok {
 		return errors.SqlError(c, err), false
 	}

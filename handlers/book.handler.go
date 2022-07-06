@@ -115,7 +115,7 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 func (h BookHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	book, err, ok := bookRepository.FindOneByID(c, id)
+	book, err, ok := bookRepository.FindByID(c, id)
 	if !ok {
 		return err
 	}
@@ -137,7 +137,7 @@ func (h BookHandler) Create(c *fiber.Ctx) error {
 	}
 
 	if body.UserID != nil {
-		_, err, ok := userRepository.FindOneByID(c, body.UserID)
+		_, err, ok := userRepository.FindByID(c, body.UserID)
 		if !ok {
 			return err
 		}

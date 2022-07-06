@@ -18,7 +18,7 @@ type FileHandler struct{}
 // @Success 201                 object   response.Response{data=boolean}
 // @Router  /api/v1/file/upload [POST]
 func (h FileHandler) Upload(c *fiber.Ctx) error {
-	file, err := c.FormFile("file")
+	fileHeader, err := c.FormFile("file")
 	if err != nil {
 		switch err {
 		case fasthttp.ErrNoMultipartForm:
@@ -32,22 +32,18 @@ func (h FileHandler) Upload(c *fiber.Ctx) error {
 		[]string{
 			config.File.ContentType.JPEG,
 			config.File.ContentType.PNG,
-		}, file.Header["Content-Type"][0]) {
+		}, fileHeader.Header["Content-Type"][0]) {
 		return errors.BadRequestException(c, errors.INVALID_FILE_FORMAT)
 	}
 
-	if file.Size > config.File.MaxSize {
+	if fileHeader.Size > config.File.MaxSize {
 		return errors.PayloadTooLargeException(c)
 	}
 
-	stream, _ := file.Open()
-	buffer := make([]byte, file.Size)
-	stream.Read(buffer)
-
-	// f, _ := os.Create("./" + file.Filename)
-	// f.Write(buffer)
-
-	// c.SaveFile(file, "./"+file.Filename)
+	// file, _ := fileHeader.Open()
+	// buffer := make([]byte, fileHeader.Size)
+	// file.Read(buffer)
+	// c.SaveFile(fileHeader, "./"+fileHeader.Filename)
 
 	return response.WriteJSON(c, response.Response{
 		Data: true,

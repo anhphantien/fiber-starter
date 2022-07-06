@@ -5,15 +5,57 @@ import (
 	"fiber-starter/entities"
 	"fiber-starter/errors"
 	"fiber-starter/utils"
+	"sync"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 var book = entities.Book{}
 
 type BookRepository struct{}
+
+func (repository BookRepository) FindAndCount(c *fiber.Ctx, q *gorm.DB) ([]entities.Book, int64, error, bool) {
+	ch := make(chan error, 2)
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	var total int64
+	go func() {
+		defer wg.Done()
+
+		err := q.
+			Session(&gorm.Session{}). // clone
+			Count(&total).Error
+		if err != nil {
+			ch <- err
+		}
+	}()
+
+	var books = []entities.Book{}
+	go func() {
+		defer wg.Done()
+
+		err := q.
+			Session(&gorm.Session{}). // clone
+			Find(&books).Error
+		if err != nil {
+			ch <- err
+		}
+	}()
+
+	wg.Wait()
+	close(ch)
+
+	for err := range ch {
+		if err != nil {
+			return books, total, errors.SqlError(c, err), false
+		}
+	}
+	return books, total, nil, true
+}
 
 func (repository BookRepository) FindByID(c *fiber.Ctx, id any) (entities.Book, error, bool) {
 	err := CreateSqlBuilder(book).

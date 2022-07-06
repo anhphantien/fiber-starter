@@ -4,15 +4,12 @@ import (
 	"database/sql"
 	"fiber-starter/dto"
 	"fiber-starter/entities"
-	"fiber-starter/errors"
 	"fiber-starter/models"
 	"fiber-starter/repositories"
 	"fiber-starter/response"
 	"fiber-starter/utils"
-	"sync"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 type BookHandler struct{}
@@ -42,6 +39,13 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 			sql.Named("keyword", "%"+pagination.Keyword+"%"),
 		)
 	}
+	q.Limit(pagination.Limit).
+		Offset(pagination.Offset).
+		Order(pagination.Order)
+	books, total, err, ok := bookRepository.FindAndCount(c, q)
+	if !ok {
+		return err
+	}
 
 	// var err error
 
@@ -59,45 +63,6 @@ func (h BookHandler) GetList(c *fiber.Ctx) error {
 	// if err != nil {
 	// 	return errors.SqlError(c, err)
 	// }
-
-	ch := make(chan error, 2)
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-
-	var total int64
-	go func() {
-		defer wg.Done()
-
-		err := q.
-			Session(&gorm.Session{}). // clone
-			Count(&total).Error
-		if err != nil {
-			ch <- err
-		}
-	}()
-
-	go func() {
-		defer wg.Done()
-
-		err := q.
-			Session(&gorm.Session{}). // clone
-			Limit(pagination.Limit).
-			Offset(pagination.Offset).
-			Order(pagination.Order).
-			Find(&books).Error
-		if err != nil {
-			ch <- err
-		}
-	}()
-
-	wg.Wait()
-	close(ch)
-
-	for err := range ch {
-		if err != nil {
-			return errors.SqlError(c, err)
-		}
-	}
 
 	return response.WriteJSON(c, response.Response{
 		Data: models.PaginationResponse{

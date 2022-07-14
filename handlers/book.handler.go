@@ -24,10 +24,9 @@ type BookHandler struct{}
 // @Success 200           object response.Response{data=[]entities.Book}
 // @Router  /api/v1/books [GET]
 func (h BookHandler) GetList(c *fiber.Ctx) error {
-	books := []entities.Book{}
-
 	pagination := utils.Pagination(c)
 
+	books := []entities.Book{}
 	q := repositories.CreateSqlBuilder(books).
 		Preload("User")
 	if pagination.Filter["id"] != nil {

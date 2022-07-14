@@ -23,19 +23,19 @@ func RoleAuth(roles ...string) fiber.Handler {
 }
 
 func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, error, bool) {
-	user := models.CurrentUser{}
+	currentUser := models.CurrentUser{}
 
 	if c.Locals("user") == nil {
-		return user, errors.UnauthorizedException(c), false
+		return currentUser, errors.UnauthorizedException(c), false
 	}
 
 	claims := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	user = models.CurrentUser{
+	currentUser = models.CurrentUser{
 		ID:        uint64(claims["id"].(float64)),
 		Username:  claims["username"].(string),
 		Role:      claims["role"].(string),
 		IssuedAt:  int64(claims["iat"].(float64)),
 		ExpiresAt: int64(claims["exp"].(float64)),
 	}
-	return user, nil, true
+	return currentUser, nil, true
 }

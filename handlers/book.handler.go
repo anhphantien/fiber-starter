@@ -146,7 +146,7 @@ func (h BookHandler) Update(c *fiber.Ctx) error {
 // @Success  200                object   response.Response{data=boolean}
 // @Router   /api/v1/books/{id} [DELETE]
 func (h BookHandler) Delete(c *fiber.Ctx) error {
-	// user, err, ok := middlewares.GetCurrentUser(c)
+	// currentUser, err, ok := middlewares.GetCurrentUser(c)
 	// if !ok {
 	// 	return err
 	// }

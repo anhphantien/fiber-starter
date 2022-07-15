@@ -1,10 +1,9 @@
 package env
 
 import (
-	"os"
-	"strconv"
+	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -16,21 +15,22 @@ var (
 	DB_PORT string
 	DB_NAME string
 
-	JWT_EXPIRES_AT int
+	JWT_EXPIRES_AT time.Duration
 	JWT_SECRET     []byte
 )
 
 func init() {
-	godotenv.Load(".env")
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
 
-	PORT = os.Getenv("PORT")
+	PORT = viper.GetString("PORT")
 
-	DB_USER = os.Getenv("DB_USER")
-	DB_PASS = os.Getenv("DB_PASS")
-	DB_HOST = os.Getenv("DB_HOST")
-	DB_PORT = os.Getenv("DB_PORT")
-	DB_NAME = os.Getenv("DB_NAME")
+	DB_USER = viper.GetString("DB_USER")
+	DB_PASS = viper.GetString("DB_PASS")
+	DB_HOST = viper.GetString("DB_HOST")
+	DB_PORT = viper.GetString("DB_PORT")
+	DB_NAME = viper.GetString("DB_NAME")
 
-	JWT_EXPIRES_AT, _ = strconv.Atoi(os.Getenv("JWT_EXPIRES_AT"))
-	JWT_SECRET = []byte(os.Getenv("JWT_SECRET"))
+	JWT_EXPIRES_AT = time.Duration(viper.GetInt("JWT_EXPIRES_AT"))
+	JWT_SECRET = []byte(viper.GetString("JWT_SECRET"))
 }

@@ -56,7 +56,7 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 			Username:  *user.Username,
 			Role:      *user.Role,
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Duration(env.JWT_EXPIRES_AT) * time.Second).Unix(),
+			ExpiresAt: time.Now().Add(env.JWT_EXPIRES_AT * time.Second).Unix(),
 		},
 	).SignedString(env.JWT_SECRET)
 

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fiber-starter/entities"
 	"fiber-starter/env"
 	"fiber-starter/repositories"
 	"fmt"
@@ -32,6 +33,8 @@ func Connect() {
 	if err != nil {
 		log.Panic(err)
 	}
+
+	entities.Sync(db)
 
 	repositories.New(db)
 }

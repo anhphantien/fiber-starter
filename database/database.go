@@ -30,7 +30,7 @@ func Connect() {
 		},
 	)
 	if err != nil {
-		log.Panic("Can't connect to database: ", err.Error())
+		log.Panic(err)
 	}
 
 	repositories.New(db)

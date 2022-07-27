@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func RoleAuth(roles ...string) fiber.Handler {
+func RoleBasedAuth(roles ...string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, err, ok := GetCurrentUser(c)
 		if !ok {

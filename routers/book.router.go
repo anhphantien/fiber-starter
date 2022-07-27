@@ -27,7 +27,7 @@ func BookRouter(r fiber.Router) {
 
 	r.Delete("books/:id",
 		middlewares.JwtAuth(),
-		middlewares.RoleAuth(
+		middlewares.RoleBasedAuth(
 			// enums.User.Role.ADMIN,
 			enums.User.Role.USER,
 		),

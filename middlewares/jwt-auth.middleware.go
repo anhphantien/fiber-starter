@@ -3,6 +3,7 @@ package middlewares
 import (
 	"fiber-starter/env"
 	"fiber-starter/errors"
+	"fiber-starter/models"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
@@ -23,4 +24,23 @@ func JwtAuth() fiber.Handler {
 			}
 		},
 	})
+}
+
+func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, error, bool) {
+	currentUser := models.CurrentUser{}
+
+	user, ok := c.Locals("user").(*jwt.Token)
+	if !ok {
+		return currentUser, errors.UnauthorizedException(c), false
+	}
+
+	claims := user.Claims.(jwt.MapClaims)
+	currentUser = models.CurrentUser{
+		ID:        uint64(claims["id"].(float64)),
+		Username:  claims["username"].(string),
+		Role:      claims["role"].(string),
+		IssuedAt:  int64(claims["iat"].(float64)),
+		ExpiresAt: int64(claims["exp"].(float64)),
+	}
+	return currentUser, nil, true
 }

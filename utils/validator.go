@@ -3,6 +3,7 @@ package utils
 import (
 	"fiber-starter/errors"
 	"fiber-starter/response"
+	"reflect"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -10,11 +11,18 @@ import (
 )
 
 func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
-	if err := c.BodyParser(payload); err != nil {
-		return errors.BadRequestException(c, err.Error()), false
-	}
+	c.BodyParser(payload)
 
-	if err := validator.New().Struct(payload); err != nil {
+	validate := validator.New()
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
+
+	if err := validate.Struct(payload); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		err := make([]response.Error, len(validationErrors))
 

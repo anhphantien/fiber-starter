@@ -21,14 +21,14 @@ func ValidateRequestBody(c *fiber.Ctx, payload any) (error, bool) {
 		for i, fieldError := range validationErrors {
 			err[i] = response.Error{
 				Field: strings.ToLower(fieldError.Field()),
-				Message: func(fieldError validator.FieldError) string {
-					switch fieldError.Tag() {
+				Message: func(fe validator.FieldError) string {
+					switch fe.Tag() {
 					case "required":
 						return "This field is required"
 					case "max":
-						return "Max length: " + fieldError.Param()
+						return "Max length: " + fe.Param()
 					default:
-						return fieldError.Error()
+						return fe.Error()
 					}
 				}(fieldError),
 			}

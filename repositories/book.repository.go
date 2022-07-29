@@ -87,7 +87,7 @@ func (repository BookRepository) Update(c *fiber.Ctx, body dto.UpdateBookBody) (
 
 	copier.Copy(&book, body)
 	err = CreateSqlBuilder(book).
-		Omit(clause.Associations). // skip auto create/update
+		Omit(clause.Associations). // skip all associations
 		Updates(utils.FilterRequestBody(c, body)).Error
 	if err != nil {
 		return book, errors.SqlError(c, err), false

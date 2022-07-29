@@ -31,7 +31,7 @@ func GetCurrentUser(c *fiber.Ctx) (models.CurrentUser, error, bool) {
 
 	user, ok := c.Locals("user").(*jwt.Token)
 	if !ok {
-		return currentUser, errors.UnauthorizedException(c), false
+		return currentUser, errors.InternalServerErrorException(c, errors.MISSING_JWT_AUTH), false
 	}
 
 	claims := user.Claims.(jwt.MapClaims)
